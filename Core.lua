@@ -551,16 +551,18 @@ function SimplePointDisplay:UpdatePoints(...)
 	-- Normal update: Cycle through valid classes
 	for ic,vc in pairs(UpdateList) do
 		-- Cycle through point types for current class
-		for it,vt in ipairs(Types[ic].points) do
-			local tid = Types[ic].points[it].id
-			if ( db[ic].types[tid].enabled and not db[ic].types[tid].configmode.enabled ) then
-				-- Retrieve new point count
-				local OldPoints = Points[tid]
-				SimplePointDisplay:GetPoints(ic, tid)
-				if Points[tid] ~= OldPoints then
-					-- Points have changed, flag for updating
-					HasChanged = true
-					PointsChanged[tid] = true
+		if Types[ic] then
+			for it,vt in ipairs(Types[ic].points) do
+				local tid = Types[ic].points[it].id
+				if ( db[ic].types[tid].enabled and not db[ic].types[tid].configmode.enabled ) then
+					-- Retrieve new point count
+					local OldPoints = Points[tid]
+					SimplePointDisplay:GetPoints(ic, tid)
+					if Points[tid] ~= OldPoints then
+						-- Points have changed, flag for updating
+						HasChanged = true
+						PointsChanged[tid] = true
+					end
 				end
 			end
 		end
