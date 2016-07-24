@@ -435,7 +435,6 @@ function SimplePointDisplay:UpdatePointDisplay(...)
 			if ((Points[tid] == 0 and not db[ic].types[tid].general.showatzero)
 				or (ic ~= PlayerClass and ic ~= "GENERAL") 	-- Not my class
 				or ((PlayerClass ~= "ROGUE") and (ic == "GENERAL") and not UnitHasVehicleUI("player"))	-- Impossible to have Combo Points
-				or (PlayerClass == "WARLOCK")
 				or (db[ic].types[tid].general.hidein.vehicle and UnitHasVehicleUI("player"))	-- Hide in vehicle
 				or ((db[ic].types[tid].general.hidein.spec - 1) == PlayerSpec))	-- Hide in spec
 				and not db[ic].types[tid].configmode.enabled then	-- Not in config mode
