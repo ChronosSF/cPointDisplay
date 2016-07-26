@@ -15,4 +15,4 @@ Then open the renamed file and change the string `nibPointDisplayDB` to `SimpleP
 
 ###Requests
 
-For issues and requests for other power types, please submit a [GitHub issue](issues/new)!
+For issues and requests for other power types, please submit a [GitHub issue](https://github.com/ChronosSF/SimplePowerDisplay/issues/new)!
