@@ -428,47 +428,49 @@ function SimplePointDisplay:UpdatePointDisplay(...)
 	-- Cycle through all Types that need updating
 	for ic,vc in pairs(UpdateList) do
 		-- Cycle through all Point Displays in current Type
-		for it,vt in ipairs(Types[ic].points) do
-			local tid = Types[ic].points[it].id
+		if Types[ic] then
+			for it,vt in ipairs(Types[ic].points) do
+				local tid = Types[ic].points[it].id
 
-			-- Do we hide the Display
-			if ((Points[tid] == 0 and not db[ic].types[tid].general.showatzero)
-				or (ic ~= PlayerClass and ic ~= "GENERAL") 	-- Not my class
-				or ((PlayerClass ~= "ROGUE") and (ic == "GENERAL") and not UnitHasVehicleUI("player"))	-- Impossible to have Combo Points
-				or (db[ic].types[tid].general.hidein.vehicle and UnitHasVehicleUI("player"))	-- Hide in vehicle
-				or ((db[ic].types[tid].general.hidein.spec - 1) == PlayerSpec))	-- Hide in spec
-				and not db[ic].types[tid].configmode.enabled then	-- Not in config mode
-					-- Hide Display
-					Frames[ic][tid].bgpanel.frame:Hide()
-			else
-			-- Update the Display
-				-- Update Bars if their Points have changed
-				if PointsChanged[tid] then
-					for i = 1, Types[ic].points[it].barcount do
-						if Points[tid] == nil then Points[tid] = 0 end
-						if Points[tid] >= i then
-						-- Show bar and set textures to "Full"
-							Frames[ic][tid].bars[i].frame:Show()
-							SetPointBarTextures(true, ic, it, tid, i)
-						else
-							if db[ic].types[tid].general.hideempty then
-							-- Hide "empty" bar
-								Frames[ic][tid].bars[i].frame:Hide()
-							else
-							-- Show bar and set textures to "Empty"
+				-- Do we hide the Display
+				if ((Points[tid] == 0 and not db[ic].types[tid].general.showatzero)
+					or (ic ~= PlayerClass and ic ~= "GENERAL") 	-- Not my class
+					or ((PlayerClass ~= "ROGUE") and (ic == "GENERAL") and not UnitHasVehicleUI("player"))	-- Impossible to have Combo Points
+					or (db[ic].types[tid].general.hidein.vehicle and UnitHasVehicleUI("player"))	-- Hide in vehicle
+					or ((db[ic].types[tid].general.hidein.spec - 1) == PlayerSpec))	-- Hide in spec
+					and not db[ic].types[tid].configmode.enabled then	-- Not in config mode
+						-- Hide Display
+						Frames[ic][tid].bgpanel.frame:Hide()
+				else
+				-- Update the Display
+					-- Update Bars if their Points have changed
+					if PointsChanged[tid] then
+						for i = 1, Types[ic].points[it].barcount do
+							if Points[tid] == nil then Points[tid] = 0 end
+							if Points[tid] >= i then
+							-- Show bar and set textures to "Full"
 								Frames[ic][tid].bars[i].frame:Show()
-								SetPointBarTextures(false, ic, it, tid, i)
+								SetPointBarTextures(true, ic, it, tid, i)
+							else
+								if db[ic].types[tid].general.hideempty then
+								-- Hide "empty" bar
+									Frames[ic][tid].bars[i].frame:Hide()
+								else
+								-- Show bar and set textures to "Empty"
+									Frames[ic][tid].bars[i].frame:Show()
+									SetPointBarTextures(false, ic, it, tid, i)
+								end
+								-- Hide the "Spark"
+								Frames[ic][tid].bars[i].spark.frame:Hide()
 							end
-							-- Hide the "Spark"
-							Frames[ic][tid].bars[i].spark.frame:Hide()
+
 						end
+						-- Show the Display
+						Frames[ic][tid].bgpanel.frame:Show()
 
+						-- Flag as having been changed
+						PointsChanged[tid] = false
 					end
-					-- Show the Display
-					Frames[ic][tid].bgpanel.frame:Show()
-
-					-- Flag as having been changed
-					PointsChanged[tid] = false
 				end
 			end
 		end
