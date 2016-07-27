@@ -7,20 +7,26 @@ SimplePointDisplay.Types = {
 		name = "General",
 		points = {
 			[1] = {name = "Combo Points", id = "cp", barcount = 5},
-		},
+		}
 	},
 	["PALADIN"] = {
 		name = "Paladin",
 		points = {
 			[1] = {name = "Holy Power", id = "hp", barcount = 5},
-		},
+		}
 	},
 	["WARLOCK"] = {
 		name = "Warlock",
 		points = {
 			[1] = {name = "Soul Shards", id = "ss", barcount = 5},
-		},
+		}
 	},
+	["MAGE"] = {
+		name = "Mage",
+		points = {
+			[1] = {name = "Arcane Charges", id = "ac", barcount = 4}
+		}
+	}
 }
 local Types = SimplePointDisplay.Types
 
@@ -514,6 +520,12 @@ function SimplePointDisplay:GetPoints(CurClass, CurType)
 		if CurType == "ss" then
 			NewPoints = UnitPower("player", SPELL_POWER_SOUL_SHARDS)
 		end
+	-- Mage
+	elseif CurClass == "MAGE" and PlayerSpec == SPEC_MAGE_ARCANE then
+		-- Arcane Charges
+		if CurType == "ac" then
+			NewPoints = UnitPower("player", SPELL_POWER_ARCANE_CHARGES)
+		end
 	end
 	Points[CurType] = NewPoints
 end
@@ -962,6 +974,14 @@ function SimplePointDisplay:HideUIElements()
 			SSF:SetScript("OnShow", function(self) self:Hide() end)
 		end
 	end
+
+	if db["MAGE"].types["ac"].enabled and db["MAGE"].types["ac"].general.hideui then
+		local APF = _G["ArcaneChargesFrame"]
+		if APF then
+			APF:Hide()
+			APF:SetScript("OnShow", function(self) self:Hide() end)
+		end
+	end
 end
 
 function SimplePointDisplay:UpdateSpec()
@@ -1015,6 +1035,9 @@ function SimplePointDisplay:PLAYER_LOGIN()
 	if (PlayerClass == "WARLOCK") then
 		tinsert(EventList, "UNIT_POWER")
 		tinsert(EventList, "UNIT_DISPLAYPOWER")
+	end
+	if (PlayerClass == "MAGE") then
+		tinsert(EventList, "UNIT_POWER")
 	end
 	local UpdateSpeed = (1 / db.updatespeed)
 	self:RegisterBucketEvent(EventList, UpdateSpeed, "UpdatePoints")
