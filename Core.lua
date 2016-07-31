@@ -977,7 +977,7 @@ function cPointDisplay:HideUIElements()
 	end
 
 	if db["MAGE"].types["ac"].enabled and db["MAGE"].types["ac"].general.hideui then
-		local APF = _G["ArcaneChargesFrame"]
+		local APF = MageArcaneChargesFrame
 		if APF then
 			APF:Hide()
 			APF:SetScript("OnShow", function(self) self:Hide() end)
