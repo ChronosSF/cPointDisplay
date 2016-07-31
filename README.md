@@ -2,7 +2,7 @@
 
 ##Installation
 
-To install just get the package from GitHub and extract it to your `<wow-installation-directory>\Interface\AddOns\` folder. You may need to rename the folder to `cPointDisplay`.
+To install just get the package from GitHub and extract it to your `<wow-installation-directory>\Interface\AddOns\` folder. You may need to rename the extracted folder to `cPointDisplay`.
 
 If you have been using `nibPointDisplay` and want to keep your settings you should rename the file `<wow-installation-directory>\WTF\Account\<acc name>\SavedVariables\nibPointDisplay.lua` to `<wow-installation-directory>\WTF\Account\<acc name>\SavedVariables\cPointDisplay.lua`.
 Then open the renamed file and change the string `nibPointDisplayDB` to `cPointDisplayDB`.
