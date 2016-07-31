@@ -1,7 +1,7 @@
-local SimplePointDisplay = LibStub("AceAddon-3.0"):GetAddon("SimplePointDisplay")
+local cPointDisplay = LibStub("AceAddon-3.0"):GetAddon("cPointDisplay")
 local db
 
-local Types = SimplePointDisplay.Types
+local Types = cPointDisplay.Types
 
 local table_AnchorPoints = {
 	"BOTTOM",
@@ -47,8 +47,8 @@ local options = nil
 local function GetOptions()
 	if not options then
 		options = {
-			name = "SimplePointDisplay",
-			handler = SimplePointDisplay,
+			name = "cPointDisplay",
+			handler = cPointDisplay,
 			type = "group",
 			args = {
 				globalsettings = {
@@ -77,7 +77,7 @@ local function GetOptions()
 							get = function() return db.classcolor.enabled end,
 							set = function(info, value) 
 								db.classcolor.enabled = value
-								SimplePointDisplay:UpdatePoints("ENABLE")
+								cPointDisplay:UpdatePoints("ENABLE")
 							end,
 							order = 30,
 						},
@@ -103,8 +103,8 @@ local function GetOptions()
 											get = function(info) return db.classcolor.bg.empty end,
 											set = function(info, value)
 												db.classcolor.bg.empty = value
-												SimplePointDisplay:GetClassColors()
-												SimplePointDisplay:UpdatePoints("ENABLE")
+												cPointDisplay:GetClassColors()
+												cPointDisplay:UpdatePoints("ENABLE")
 											end,
 											order = 10,
 										},
@@ -117,8 +117,8 @@ local function GetOptions()
 											get = function(info) return db.classcolor.bg.normal end,
 											set = function(info, value)
 												db.classcolor.bg.normal = value
-												SimplePointDisplay:GetClassColors()
-												SimplePointDisplay:UpdatePoints("ENABLE")
+												cPointDisplay:GetClassColors()
+												cPointDisplay:UpdatePoints("ENABLE")
 											end,
 											order = 20,
 										},
@@ -131,8 +131,8 @@ local function GetOptions()
 											get = function(info) return db.classcolor.bg.max end,
 											set = function(info, value)
 												db.classcolor.bg.max = value
-												SimplePointDisplay:GetClassColors()
-												SimplePointDisplay:UpdatePoints("ENABLE")
+												cPointDisplay:GetClassColors()
+												cPointDisplay:UpdatePoints("ENABLE")
 											end,
 											order = 30,
 										},
@@ -153,8 +153,8 @@ local function GetOptions()
 											get = function(info) return db.classcolor.border.empty end,
 											set = function(info, value)
 												db.classcolor.border.empty = value
-												SimplePointDisplay:GetClassColors()
-												SimplePointDisplay:UpdatePoints("ENABLE")
+												cPointDisplay:GetClassColors()
+												cPointDisplay:UpdatePoints("ENABLE")
 											end,
 											order = 10,
 										},
@@ -167,8 +167,8 @@ local function GetOptions()
 											get = function(info) return db.classcolor.border.normal end,
 											set = function(info, value)
 												db.classcolor.border.normal = value
-												SimplePointDisplay:GetClassColors()
-												SimplePointDisplay:UpdatePoints("ENABLE")
+												cPointDisplay:GetClassColors()
+												cPointDisplay:UpdatePoints("ENABLE")
 											end,
 											order = 20,
 										},
@@ -181,8 +181,8 @@ local function GetOptions()
 											get = function(info) return db.classcolor.border.max end,
 											set = function(info, value)
 												db.classcolor.border.max = value
-												SimplePointDisplay:GetClassColors()
-												SimplePointDisplay:UpdatePoints("ENABLE")
+												cPointDisplay:GetClassColors()
+												cPointDisplay:UpdatePoints("ENABLE")
 											end,
 											order = 30,
 										},
@@ -203,8 +203,8 @@ local function GetOptions()
 											get = function(info) return db.classcolor.spark.normal end,
 											set = function(info, value)
 												db.classcolor.spark.normal = value
-												SimplePointDisplay:GetClassColors()
-												SimplePointDisplay:UpdatePoints("ENABLE")
+												cPointDisplay:GetClassColors()
+												cPointDisplay:UpdatePoints("ENABLE")
 											end,
 											order = 10,
 										},
@@ -217,8 +217,8 @@ local function GetOptions()
 											get = function(info) return db.classcolor.spark.max end,
 											set = function(info, value) 
 												db.classcolor.spark.max = value
-												SimplePointDisplay:GetClassColors()
-												SimplePointDisplay:UpdatePoints("ENABLE")
+												cPointDisplay:GetClassColors()
+												cPointDisplay:UpdatePoints("ENABLE")
 											end,
 											order = 20,
 										},
@@ -286,9 +286,9 @@ local function GetOptions()
 							db[ic].types[tid].enabled = value
 							db[ic].types[tid].configmode.enabled = false
 							if not value then
-								SimplePointDisplay:DisablePointDisplay(ic, tid)
+								cPointDisplay:DisablePointDisplay(ic, tid)
 							else
-								SimplePointDisplay:EnablePointDisplay(ic, tid)
+								cPointDisplay:EnablePointDisplay(ic, tid)
 							end
 						end,
 						order = 20,
@@ -307,11 +307,11 @@ local function GetOptions()
 							local FromTID = CopyAllFromTable[value].typeid
 							local FromNum = CopyAllFromTable[value].typenum
 							if FromTID ~= tid then
-								SimplePointDisplay:CopyAllSettings(db[FromIC].types[FromTID], db[ic].types[tid], FromIC, ic, FromTID, tid, FromNum, it)
-								SimplePointDisplay:GetTextures()
-								SimplePointDisplay:UpdateBGPanelTextures()
-								SimplePointDisplay:UpdatePosition()
-								SimplePointDisplay:UpdatePoints("ENABLE")
+								cPointDisplay:CopyAllSettings(db[FromIC].types[FromTID], db[ic].types[tid], FromIC, ic, FromTID, tid, FromNum, it)
+								cPointDisplay:GetTextures()
+								cPointDisplay:UpdateBGPanelTextures()
+								cPointDisplay:UpdatePosition()
+								cPointDisplay:UpdatePoints("ENABLE")
 							end
 						end,
 						style = "dropdown",
@@ -332,7 +332,7 @@ local function GetOptions()
 								get = function(info) return db[ic].types[tid].configmode.enabled end,
 								set = function(info, value) 
 									db[ic].types[tid].configmode.enabled = value
-									SimplePointDisplay:UpdatePoints("ENABLE")
+									cPointDisplay:UpdatePoints("ENABLE")
 								end,
 								order = 10,
 							},
@@ -343,7 +343,7 @@ local function GetOptions()
 								get = function(info) return db[ic].types[tid].configmode.count end,
 								set = function(info, value) 
 									db[ic].types[tid].configmode.count = value
-									SimplePointDisplay:UpdatePoints("ENABLE")
+									cPointDisplay:UpdatePoints("ENABLE")
 								end,
 								disabled = function() if db[ic].types[tid].configmode.enabled and db[ic].types[tid].enabled then return false else return true end end,
 								order = 20,
@@ -370,7 +370,7 @@ local function GetOptions()
 										get = function(info) return db[ic].types[tid].general.hideui end,
 										set = function(info, value) 
 											db[ic].types[tid].general.hideui = value
-											SimplePointDisplay:HideUIElements()
+											cPointDisplay:HideUIElements()
 										end,
 										order = 10,
 										disabled = function() if (tid == "cp" or tid == "hp" or tid == "ss") then return false else return true end end,
@@ -383,7 +383,7 @@ local function GetOptions()
 										get = function(info) return db[ic].types[tid].general.showatzero end,
 										set = function(info, value) 
 											db[ic].types[tid].general.showatzero = value
-											SimplePointDisplay:UpdatePoints("ENABLE")
+											cPointDisplay:UpdatePoints("ENABLE")
 										end,
 										order = 10,
 									},
@@ -395,7 +395,7 @@ local function GetOptions()
 										get = function(info) return db[ic].types[tid].general.hideempty end,
 										set = function(info, value) 
 											db[ic].types[tid].general.hideempty = value
-											SimplePointDisplay:UpdatePoints("ENABLE")
+											cPointDisplay:UpdatePoints("ENABLE")
 										end,
 										order = 20,
 									},
@@ -413,7 +413,7 @@ local function GetOptions()
 												get = function(info) return db[ic].types[tid].general.hidein.vehicle end,
 												set = function(info, value) 
 													db[ic].types[tid].general.hidein.vehicle = value
-													SimplePointDisplay:UpdatePoints("ENABLE")
+													cPointDisplay:UpdatePoints("ENABLE")
 												end,
 												order = 10,
 											},
@@ -425,7 +425,7 @@ local function GetOptions()
 												end,
 												set = function(info, value)
 													db[ic].types[tid].general.hidein.spec = value
-													SimplePointDisplay:UpdatePoints("ENABLE")
+													cPointDisplay:UpdatePoints("ENABLE")
 												end,
 												style = "dropdown",
 												width = nil,
@@ -448,7 +448,7 @@ local function GetOptions()
 												get = function(info) return db[ic].types[tid].general.direction.vertical end,
 												set = function(info, value) 
 													db[ic].types[tid].general.direction.vertical = value
-													SimplePointDisplay:UpdatePosition()
+													cPointDisplay:UpdatePosition()
 												end,
 												order = 10,
 											},
@@ -460,7 +460,7 @@ local function GetOptions()
 												get = function(info) return db[ic].types[tid].general.direction.reverse end,
 												set = function(info, value) 
 													db[ic].types[tid].general.direction.reverse = value
-													SimplePointDisplay:UpdatePosition()
+													cPointDisplay:UpdatePosition()
 												end,
 												order = 20,
 											},
@@ -491,7 +491,7 @@ local function GetOptions()
 										set = function(info, value)
 											value = ValidateOffset(value)
 											db[ic].types[tid].position.x = value
-											SimplePointDisplay:UpdatePosition()
+											cPointDisplay:UpdatePosition()
 										end,
 									},
 									yoffset = {
@@ -503,7 +503,7 @@ local function GetOptions()
 										set = function(info, value)
 											value = ValidateOffset(value)
 											db[ic].types[tid].position.y = value
-											SimplePointDisplay:UpdatePosition()
+											cPointDisplay:UpdatePosition()
 										end,
 									},
 									anchorto = {
@@ -516,7 +516,7 @@ local function GetOptions()
 										end,
 										set = function(info, value)
 											db[ic].types[tid].position.anchorto = table_AnchorPoints[value]
-											SimplePointDisplay:UpdatePosition()
+											cPointDisplay:UpdatePosition()
 										end,
 										style = "dropdown",
 										width = nil,
@@ -533,7 +533,7 @@ local function GetOptions()
 										end,
 										set = function(info, value)
 											db[ic].types[tid].position.anchorfrom = table_AnchorPoints[value]
-											SimplePointDisplay:UpdatePosition()
+											cPointDisplay:UpdatePosition()
 										end,
 										style = "dropdown",
 										width = nil,
@@ -549,7 +549,7 @@ local function GetOptions()
 										get = function(info) return tostring(db[ic].types[tid].position.parent) end,
 										set = function(info, value)
 											db[ic].types[tid].position.parent = value
-											SimplePointDisplay:UpdatePosition()
+											cPointDisplay:UpdatePosition()
 										end,
 									},
 								},
@@ -570,7 +570,7 @@ local function GetOptions()
 										end,
 										set = function(info, value)
 											db[ic].types[tid].position.framelevel.strata = table_Strata[value]
-											SimplePointDisplay:UpdatePosition()
+											cPointDisplay:UpdatePosition()
 										end,
 										style = "dropdown",
 										width = nil,
@@ -584,7 +584,7 @@ local function GetOptions()
 										get = function(info) return db[ic].types[tid].position.framelevel.level end,
 										set = function(info, value) 
 											db[ic].types[tid].position.framelevel.level = value
-											SimplePointDisplay:UpdatePosition()
+											cPointDisplay:UpdatePosition()
 										end,
 										order = 20,
 									},
@@ -613,7 +613,7 @@ local function GetOptions()
 								name = "Enabled",
 								desc = "Enable/Disable the Background Panel.",
 								get = function(info) return db[ic].types[tid].bgpanel.enabled end,
-								set = function(info, value) db[ic].types[tid].bgpanel.enabled = value SimplePointDisplay:UpdateBGPanelTextures() end,
+								set = function(info, value) db[ic].types[tid].bgpanel.enabled = value cPointDisplay:UpdateBGPanelTextures() end,
 								order = 10,
 							},
 							size = {
@@ -631,7 +631,7 @@ local function GetOptions()
 										set = function(info, value)
 											value = ValidateOffset(value)
 											db[ic].types[tid].bgpanel.size.width = value
-											SimplePointDisplay:UpdatePosition()
+											cPointDisplay:UpdatePosition()
 										end,
 									},
 									height = {
@@ -643,7 +643,7 @@ local function GetOptions()
 										set = function(info, value)
 											value = ValidateOffset(value)
 											db[ic].types[tid].bgpanel.size.height = value
-											SimplePointDisplay:UpdatePosition()
+											cPointDisplay:UpdatePosition()
 										end,
 									},
 								},							
@@ -663,8 +663,8 @@ local function GetOptions()
 										end,
 										set = function(info, value)
 											db[ic].types[tid].bgpanel.bg.texture = value
-											SimplePointDisplay:GetTextures()
-											SimplePointDisplay:UpdateBGPanelTextures()
+											cPointDisplay:GetTextures()
+											cPointDisplay:UpdateBGPanelTextures()
 										end,
 										dialogControl='LSM30_Background',
 										order = 10,
@@ -681,7 +681,7 @@ local function GetOptions()
 											db[ic].types[tid].bgpanel.bg.color.g = g
 											db[ic].types[tid].bgpanel.bg.color.b = b
 											db[ic].types[tid].bgpanel.bg.color.a = a
-											SimplePointDisplay:UpdateBGPanelTextures()
+											cPointDisplay:UpdateBGPanelTextures()
 										end,
 										order = 20,
 									},
@@ -702,8 +702,8 @@ local function GetOptions()
 										end,
 										set = function(info, value)
 											db[ic].types[tid].bgpanel.border.texture = value
-											SimplePointDisplay:GetTextures()
-											SimplePointDisplay:UpdateBGPanelTextures()
+											cPointDisplay:GetTextures()
+											cPointDisplay:UpdateBGPanelTextures()
 										end,
 										dialogControl='LSM30_Border',
 										order = 10,
@@ -715,8 +715,8 @@ local function GetOptions()
 										get = function(info) return db[ic].types[tid].bgpanel.border.inset end,
 										set = function(info, value) 
 											db[ic].types[tid].bgpanel.border.inset = value
-											SimplePointDisplay:UpdateBGPanelTextures()
-											SimplePointDisplay:UpdatePosition()
+											cPointDisplay:UpdateBGPanelTextures()
+											cPointDisplay:UpdatePosition()
 										end,
 										order = 20,
 									},
@@ -725,7 +725,7 @@ local function GetOptions()
 										name = "Edge Size",
 										min = -32, max = 32, step = 1,
 										get = function(info) return db[ic].types[tid].bgpanel.border.edgesize end,
-										set = function(info, value) db[ic].types[tid].bgpanel.border.edgesize = value; SimplePointDisplay:UpdateBGPanelTextures(); end,
+										set = function(info, value) db[ic].types[tid].bgpanel.border.edgesize = value; cPointDisplay:UpdateBGPanelTextures(); end,
 										order = 30,
 									},
 									color = {
@@ -740,7 +740,7 @@ local function GetOptions()
 											db[ic].types[tid].bgpanel.border.color.g = g
 											db[ic].types[tid].bgpanel.border.color.b = b
 											db[ic].types[tid].bgpanel.border.color.a = a
-											SimplePointDisplay:UpdateBGPanelTextures()
+											cPointDisplay:UpdateBGPanelTextures()
 										end,
 										order = 40,
 									},
@@ -772,7 +772,7 @@ local function GetOptions()
 								get = function() return db[ic].types[tid].combatfader.enabled end,
 								set = function(info, value) 
 									db[ic].types[tid].combatfader.enabled = value
-									SimplePointDisplay:UpdateCombatFader()
+									cPointDisplay:UpdateCombatFader()
 								end,
 								order = 30,
 							},
@@ -794,7 +794,7 @@ local function GetOptions()
 										min = 0, max = 1, step = 0.05,
 										isPercent = true,
 										get = function(info) return db[ic].types[tid].combatfader.opacity.incombat end,
-										set = function(info, value) db[ic].types[tid].combatfader.opacity.incombat = value; SimplePointDisplay:UpdateCombatFader(); end,
+										set = function(info, value) db[ic].types[tid].combatfader.opacity.incombat = value; cPointDisplay:UpdateCombatFader(); end,
 										order = 10,
 									},
 									hurt = {
@@ -803,7 +803,7 @@ local function GetOptions()
 										min = 0, max = 1, step = 0.05,
 										isPercent = true,
 										get = function(info) return db[ic].types[tid].combatfader.opacity.hurt end,
-										set = function(info, value) db[ic].types[tid].combatfader.opacity.hurt = value; SimplePointDisplay:UpdateCombatFader(); end,
+										set = function(info, value) db[ic].types[tid].combatfader.opacity.hurt = value; cPointDisplay:UpdateCombatFader(); end,
 										order = 20,
 									},
 									target = {
@@ -812,7 +812,7 @@ local function GetOptions()
 										min = 0, max = 1, step = 0.05,
 										isPercent = true,
 										get = function(info) return db[ic].types[tid].combatfader.opacity.target end,
-										set = function(info, value) db[ic].types[tid].combatfader.opacity.target = value; SimplePointDisplay:UpdateCombatFader(); end,
+										set = function(info, value) db[ic].types[tid].combatfader.opacity.target = value; cPointDisplay:UpdateCombatFader(); end,
 										order = 30,
 									},
 									outofcombat = {
@@ -821,7 +821,7 @@ local function GetOptions()
 										min = 0, max = 1, step = 0.05,
 										isPercent = true,
 										get = function(info) return db[ic].types[tid].combatfader.opacity.outofcombat end,
-										set = function(info, value) db[ic].types[tid].combatfader.opacity.outofcombat = value; SimplePointDisplay:UpdateCombatFader(); end,
+										set = function(info, value) db[ic].types[tid].combatfader.opacity.outofcombat = value; cPointDisplay:UpdateCombatFader(); end,
 										order = 40,
 									},
 								},
@@ -852,11 +852,11 @@ local function GetOptions()
 							name = "Copy settings from",
 							set = function(info, value)
 								if value ~= i then
-									SimplePointDisplay:CopyBarSettings(db[ic].types[tid].bars[value], db[ic].types[tid].bars[i])
-									SimplePointDisplay:GetTextures()
-									SimplePointDisplay:UpdateBGPanelTextures()
-									SimplePointDisplay:UpdatePosition()
-									SimplePointDisplay:UpdatePoints("ENABLE")
+									cPointDisplay:CopyBarSettings(db[ic].types[tid].bars[value], db[ic].types[tid].bars[i])
+									cPointDisplay:GetTextures()
+									cPointDisplay:UpdateBGPanelTextures()
+									cPointDisplay:UpdatePosition()
+									cPointDisplay:UpdatePoints("ENABLE")
 								end
 							end,
 							style = "dropdown",
@@ -884,8 +884,8 @@ local function GetOptions()
 											set = function(info, value)
 												value = ValidateOffset(value)
 												db[ic].types[tid].bars[i].size.width = value
-												SimplePointDisplay:UpdatePosition()
-												SimplePointDisplay:UpdatePoints("ENABLE")
+												cPointDisplay:UpdatePosition()
+												cPointDisplay:UpdatePoints("ENABLE")
 											end,
 										},
 										height = {
@@ -897,8 +897,8 @@ local function GetOptions()
 											set = function(info, value)
 												value = ValidateOffset(value)
 												db[ic].types[tid].bars[i].size.height = value
-												SimplePointDisplay:UpdatePosition()
-												SimplePointDisplay:UpdatePoints("ENABLE")
+												cPointDisplay:UpdatePosition()
+												cPointDisplay:UpdatePoints("ENABLE")
 											end,
 										},
 									},							
@@ -919,7 +919,7 @@ local function GetOptions()
 											set = function(info, value)
 												value = ValidateOffset(value)
 												db[ic].types[tid].bars[i].position.xofs = value
-												SimplePointDisplay:UpdatePosition()
+												cPointDisplay:UpdatePosition()
 											end,
 										},
 										yoffset = {
@@ -932,7 +932,7 @@ local function GetOptions()
 											set = function(info, value)
 												value = ValidateOffset(value)
 												db[ic].types[tid].bars[i].position.yofs = value
-												SimplePointDisplay:UpdatePosition()
+												cPointDisplay:UpdatePosition()
 											end,
 										},
 										gap = {
@@ -945,7 +945,7 @@ local function GetOptions()
 											set = function(info, value)
 												value = ValidateOffset(value)
 												db[ic].types[tid].bars[i].position.gap = value
-												SimplePointDisplay:UpdatePosition()
+												cPointDisplay:UpdatePosition()
 											end,
 										},
 									},
@@ -972,8 +972,8 @@ local function GetOptions()
 											end,
 											set = function(info, value)
 												db[ic].types[tid].bars[i].bg.empty.texture = value
-												SimplePointDisplay:GetTextures()
-												SimplePointDisplay:UpdatePoints("ENABLE")
+												cPointDisplay:GetTextures()
+												cPointDisplay:UpdatePoints("ENABLE")
 											end,
 											dialogControl='LSM30_Background',
 											order = 10,
@@ -990,7 +990,7 @@ local function GetOptions()
 												db[ic].types[tid].bars[i].bg.empty.color.g = g
 												db[ic].types[tid].bars[i].bg.empty.color.b = b
 												db[ic].types[tid].bars[i].bg.empty.color.a = a
-												SimplePointDisplay:UpdatePoints("ENABLE")
+												cPointDisplay:UpdatePoints("ENABLE")
 											end,
 											order = 20,
 										},
@@ -1011,8 +1011,8 @@ local function GetOptions()
 											end,
 											set = function(info, value)
 												db[ic].types[tid].bars[i].bg.full.texture = value
-												SimplePointDisplay:GetTextures()
-												SimplePointDisplay:UpdatePoints("ENABLE")
+												cPointDisplay:GetTextures()
+												cPointDisplay:UpdatePoints("ENABLE")
 											end,
 											dialogControl='LSM30_Background',
 											order = 10,
@@ -1035,7 +1035,7 @@ local function GetOptions()
 														db[ic].types[tid].bars[i].bg.full.color.g = g
 														db[ic].types[tid].bars[i].bg.full.color.b = b
 														db[ic].types[tid].bars[i].bg.full.color.a = a
-														SimplePointDisplay:UpdatePoints("ENABLE")
+														cPointDisplay:UpdatePoints("ENABLE")
 													end,
 													order = 10,
 												},
@@ -1052,7 +1052,7 @@ local function GetOptions()
 														db[ic].types[tid].bars[i].bg.full.maxcolor.g = g
 														db[ic].types[tid].bars[i].bg.full.maxcolor.b = b
 														db[ic].types[tid].bars[i].bg.full.maxcolor.a = a
-														SimplePointDisplay:UpdatePoints("ENABLE")
+														cPointDisplay:UpdatePoints("ENABLE")
 													end,
 													order = 20,
 												},
@@ -1082,8 +1082,8 @@ local function GetOptions()
 											end,
 											set = function(info, value)
 												db[ic].types[tid].bars[i].border.empty.texture = value
-												SimplePointDisplay:GetTextures()
-												SimplePointDisplay:UpdatePoints("ENABLE")
+												cPointDisplay:GetTextures()
+												cPointDisplay:UpdatePoints("ENABLE")
 											end,
 											dialogControl='LSM30_Border',
 											order = 10,
@@ -1095,7 +1095,7 @@ local function GetOptions()
 											get = function(info) return db[ic].types[tid].bars[i].border.empty.inset end,
 											set = function(info, value) 
 												db[ic].types[tid].bars[i].border.empty.inset = value
-												SimplePointDisplay:UpdatePoints("ENABLE")
+												cPointDisplay:UpdatePoints("ENABLE")
 											end,
 											order = 20,
 										},
@@ -1104,7 +1104,7 @@ local function GetOptions()
 											name = "Edge Size",
 											min = -32, max = 32, step = 1,
 											get = function(info) return db[ic].types[tid].bars[i].border.empty.edgesize end,
-											set = function(info, value) db[ic].types[tid].bars[i].border.empty.edgesize = value; SimplePointDisplay:UpdatePoints("ENABLE"); end,
+											set = function(info, value) db[ic].types[tid].bars[i].border.empty.edgesize = value; cPointDisplay:UpdatePoints("ENABLE"); end,
 											order = 30,
 										},
 										color = {
@@ -1119,7 +1119,7 @@ local function GetOptions()
 												db[ic].types[tid].bars[i].border.empty.color.g = g
 												db[ic].types[tid].bars[i].border.empty.color.b = b
 												db[ic].types[tid].bars[i].border.empty.color.a = a
-												SimplePointDisplay:UpdatePoints("ENABLE")
+												cPointDisplay:UpdatePoints("ENABLE")
 											end,
 											order = 40,
 										},
@@ -1140,8 +1140,8 @@ local function GetOptions()
 											end,
 											set = function(info, value)
 												db[ic].types[tid].bars[i].border.full.texture = value
-												SimplePointDisplay:GetTextures()
-												SimplePointDisplay:UpdatePoints("ENABLE")
+												cPointDisplay:GetTextures()
+												cPointDisplay:UpdatePoints("ENABLE")
 											end,
 											dialogControl='LSM30_Border',
 											order = 10,
@@ -1153,7 +1153,7 @@ local function GetOptions()
 											get = function(info) return db[ic].types[tid].bars[i].border.full.inset end,
 											set = function(info, value) 
 												db[ic].types[tid].bars[i].border.full.inset = value
-												SimplePointDisplay:UpdatePoints("ENABLE")
+												cPointDisplay:UpdatePoints("ENABLE")
 											end,
 											order = 20,
 										},
@@ -1162,7 +1162,7 @@ local function GetOptions()
 											name = "Edge Size",
 											min = -32, max = 32, step = 1,
 											get = function(info) return db[ic].types[tid].bars[i].border.full.edgesize end,
-											set = function(info, value) db[ic].types[tid].bars[i].border.full.edgesize = value; SimplePointDisplay:UpdatePoints("ENABLE"); end,
+											set = function(info, value) db[ic].types[tid].bars[i].border.full.edgesize = value; cPointDisplay:UpdatePoints("ENABLE"); end,
 											order = 30,
 										},
 										colors = {
@@ -1183,7 +1183,7 @@ local function GetOptions()
 														db[ic].types[tid].bars[i].border.full.color.g = g
 														db[ic].types[tid].bars[i].border.full.color.b = b
 														db[ic].types[tid].bars[i].border.full.color.a = a
-														SimplePointDisplay:UpdatePoints("ENABLE")
+														cPointDisplay:UpdatePoints("ENABLE")
 													end,
 													order = 10,
 												},
@@ -1200,7 +1200,7 @@ local function GetOptions()
 														db[ic].types[tid].bars[i].border.full.maxcolor.g = g
 														db[ic].types[tid].bars[i].border.full.maxcolor.b = b
 														db[ic].types[tid].bars[i].border.full.maxcolor.a = a
-														SimplePointDisplay:UpdatePoints("ENABLE")
+														cPointDisplay:UpdatePoints("ENABLE")
 													end,
 													order = 20,
 												},
@@ -1221,12 +1221,12 @@ local function GetOptions()
 									name = "Enabled",
 									desc = "Enable/Disable the Spark effect.",
 									get = function(info) return db[ic].types[tid].bars[i].spark.enabled end,
-									set = function(info, value) db[ic].types[tid].bars[i].spark.enabled = value; SimplePointDisplay:UpdatePoints("ENABLE"); end,
+									set = function(info, value) db[ic].types[tid].bars[i].spark.enabled = value; cPointDisplay:UpdatePoints("ENABLE"); end,
 									order = 10,
 								},
 								note = {
 									type = "description",
-									name = "Note: You will need to use your own image to get the spark effect as SimplePointDisplay does not include one.",
+									name = "Note: You will need to use your own image to get the spark effect as cPointDisplay does not include one.",
 									order = 20,
 								},
 								position = {
@@ -1244,7 +1244,7 @@ local function GetOptions()
 											set = function(info, value)
 												value = ValidateOffset(value)
 												db[ic].types[tid].bars[i].spark.position.x = value
-												SimplePointDisplay:UpdatePosition()
+												cPointDisplay:UpdatePosition()
 											end,
 										},
 										yoffset = {
@@ -1257,7 +1257,7 @@ local function GetOptions()
 											set = function(info, value)
 												value = ValidateOffset(value)
 												db[ic].types[tid].bars[i].spark.position.y = value
-												SimplePointDisplay:UpdatePosition()
+												cPointDisplay:UpdatePosition()
 											end,
 										},
 									},
@@ -1277,7 +1277,7 @@ local function GetOptions()
 											set = function(info, value)
 												value = ValidateOffset(value)
 												db[ic].types[tid].bars[i].spark.size.width = value
-												SimplePointDisplay:UpdatePosition()
+												cPointDisplay:UpdatePosition()
 											end,
 										},
 										height = {
@@ -1290,7 +1290,7 @@ local function GetOptions()
 											set = function(info, value)
 												value = ValidateOffset(value)
 												db[ic].types[tid].bars[i].spark.size.height = value
-												SimplePointDisplay:UpdatePosition()
+												cPointDisplay:UpdatePosition()
 											end,
 										},
 									},							
@@ -1309,8 +1309,8 @@ local function GetOptions()
 											end,
 											set = function(info, value)
 												db[ic].types[tid].bars[i].spark.bg.texture = value
-												SimplePointDisplay:GetTextures()
-												SimplePointDisplay:UpdatePoints("ENABLE")
+												cPointDisplay:GetTextures()
+												cPointDisplay:UpdatePoints("ENABLE")
 											end,
 											dialogControl='LSM30_Background',
 											order = 10,
@@ -1333,7 +1333,7 @@ local function GetOptions()
 														db[ic].types[tid].bars[i].spark.bg.color.g = g
 														db[ic].types[tid].bars[i].spark.bg.color.b = b
 														db[ic].types[tid].bars[i].spark.bg.color.a = a
-														SimplePointDisplay:UpdatePoints("ENABLE")
+														cPointDisplay:UpdatePoints("ENABLE")
 													end,
 													order = 10,
 												},
@@ -1350,7 +1350,7 @@ local function GetOptions()
 														db[ic].types[tid].bars[i].spark.bg.maxcolor.g = g
 														db[ic].types[tid].bars[i].spark.bg.maxcolor.b = b
 														db[ic].types[tid].bars[i].spark.bg.maxcolor.a = a
-														SimplePointDisplay:UpdatePoints("ENABLE")
+														cPointDisplay:UpdatePoints("ENABLE")
 													end,
 													order = 20,
 												},
@@ -1394,7 +1394,7 @@ local function GetOptions()
 end
 
 -- Copy All Settings
-function SimplePointDisplay:CopyAllSettings(FromTable, ToTable, FromIC, ToIC, FromTID, ToTID, FromNum, ToNum)
+function cPointDisplay:CopyAllSettings(FromTable, ToTable, FromIC, ToIC, FromTID, ToTID, FromNum, ToNum)
 	if not FromTable or not ToTable then return false end
 	for i,v in pairs(FromTable) do
 		if type(FromTable[i]) == "table" then
@@ -1453,7 +1453,7 @@ function SimplePointDisplay:CopyAllSettings(FromTable, ToTable, FromIC, ToIC, Fr
 end
 
 -- Copy Bar Settings
-function SimplePointDisplay:CopyBarSettings(FromTable, ToTable)
+function cPointDisplay:CopyBarSettings(FromTable, ToTable)
 	if not FromTable or not ToTable then return false end
 	for i,v in pairs(FromTable) do
 		if type(FromTable[i]) == "table" then
@@ -1495,20 +1495,20 @@ local intoptions = nil
 local function GetIntOptions()
 	if not intoptions then
 		intoptions = {
-			name = "SimplePointDisplay",
-			handler = SimplePointDisplay,
+			name = "cPointDisplay",
+			handler = cPointDisplay,
 			type = "group",
 			args = {
 				note = {
 					type = "description",
-					name = "You can access the SimplePointDisplay options by typing: /spd",
+					name = "You can access the cPointDisplay options by typing: /spd",
 					order = 10,
 				},
 				openoptions = {
 					type = "execute",
 					name = "Open config...",
 					func = function() 
-						SimplePointDisplay:OpenOptions()
+						cPointDisplay:OpenOptions()
 					end,
 					order = 20,
 				},
@@ -1518,30 +1518,30 @@ local function GetIntOptions()
 	return intoptions
 end
 
-function SimplePointDisplay:OpenOptions()
-	if not options then SimplePointDisplay:SetUpOptions() end
-	LibStub("AceConfigDialog-3.0"):Open("SimplePointDisplay")
+function cPointDisplay:OpenOptions()
+	if not options then cPointDisplay:SetUpOptions() end
+	LibStub("AceConfigDialog-3.0"):Open("cPointDisplay")
 end
 
-function SimplePointDisplay:ChatCommand(input)
-	SimplePointDisplay:OpenOptions()
+function cPointDisplay:ChatCommand(input)
+	cPointDisplay:OpenOptions()
 end
 
-function SimplePointDisplay:ConfigRefresh()
+function cPointDisplay:ConfigRefresh()
 	db = self.db.profile
 end
 
-function SimplePointDisplay:SetUpInitialOptions()
+function cPointDisplay:SetUpInitialOptions()
 	-- Chat commands
-	self:RegisterChatCommand("spd", "ChatCommand")
-	self:RegisterChatCommand("SimplePointDisplay", "ChatCommand")
+	self:RegisterChatCommand("cpd", "ChatCommand")
+	self:RegisterChatCommand("cPointDisplay", "ChatCommand")
 	
 	-- Interface panel options
-	LibStub("AceConfig-3.0"):RegisterOptionsTable("SimplePointDisplay-Int", GetIntOptions)
-	self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("SimplePointDisplay-Int", "SimplePointDisplay")
+	LibStub("AceConfig-3.0"):RegisterOptionsTable("cPointDisplay-Int", GetIntOptions)
+	self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("cPointDisplay-Int", "cPointDisplay")
 end
 
-function SimplePointDisplay:SetUpOptions()
+function cPointDisplay:SetUpOptions()
 	db = self.db.profile
 	
 	-- Primary options
@@ -1550,6 +1550,6 @@ function SimplePointDisplay:SetUpOptions()
 	options.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)
 	options.args.profiles.order = 10000
 	
-	LibStub("AceConfig-3.0"):RegisterOptionsTable("SimplePointDisplay", options)
-	LibStub("AceConfigDialog-3.0"):SetDefaultSize("SimplePointDisplay", 800, 600)
+	LibStub("AceConfig-3.0"):RegisterOptionsTable("cPointDisplay", options)
+	LibStub("AceConfigDialog-3.0"):SetDefaultSize("cPointDisplay", 800, 600)
 end
