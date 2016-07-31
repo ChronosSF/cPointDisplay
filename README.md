@@ -12,6 +12,7 @@ Then open the renamed file and change the string `nibPointDisplayDB` to `cPointD
 - Combo Points
 - Holy Power
 - Soul Shards
+- Arcane Charges *(new)*
 
 ###Requests
 
