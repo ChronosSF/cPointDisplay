@@ -1,8 +1,8 @@
-local SimplePointDisplay = LibStub("AceAddon-3.0"):NewAddon("SimplePointDisplay", "AceConsole-3.0", "AceEvent-3.0", "AceBucket-3.0")
+local cPointDisplay = LibStub("AceAddon-3.0"):NewAddon("cPointDisplay", "AceConsole-3.0", "AceEvent-3.0", "AceBucket-3.0")
 local LSM = LibStub("LibSharedMedia-3.0")
 local db
 
-SimplePointDisplay.Types = {
+cPointDisplay.Types = {
 	["GENERAL"] = {
 		name = "General",
 		points = {
@@ -28,7 +28,7 @@ SimplePointDisplay.Types = {
 		}
 	}
 }
-local Types = SimplePointDisplay.Types
+local Types = cPointDisplay.Types
 
 ---- Spell Info table
 local SpellInfo = {
@@ -250,7 +250,7 @@ local function FadeIt(self, NewOpacity)
 end
 
 -- Determine new opacity values for frames
-function SimplePointDisplay:FadeFrames()
+function cPointDisplay:FadeFrames()
 	for ic,vc in pairs(Types) do
 		for it,vt in ipairs(Types[ic].points) do
 			local NewOpacity
@@ -280,10 +280,10 @@ function SimplePointDisplay:FadeFrames()
 			end
 		end
 	end
-	SimplePointDisplay:UpdatePointDisplay("ENABLE")
+	cPointDisplay:UpdatePointDisplay("ENABLE")
 end
 
-function SimplePointDisplay:UpdateCFStatus()
+function cPointDisplay:UpdateCFStatus()
 	local OldStatus = CFStatus
 
 	-- Combat Fader based on status
@@ -302,16 +302,16 @@ function SimplePointDisplay:UpdateCFStatus()
 			CFStatus = "OUTOFCOMBAT"
 		end
 	end
-	if CFStatus ~= OldStatus then SimplePointDisplay:FadeFrames() end
+	if CFStatus ~= OldStatus then cPointDisplay:FadeFrames() end
 end
 
-function SimplePointDisplay:UpdateCombatFader()
+function cPointDisplay:UpdateCombatFader()
 	CFStatus = nil
-	SimplePointDisplay:UpdateCFStatus()
+	cPointDisplay:UpdateCFStatus()
 end
 
 -- On combat state change
-function SimplePointDisplay:CombatFaderCombatState()
+function cPointDisplay:CombatFaderCombatState()
 	-- If in combat, then don't worry about health/power events
 	if UnitAffectingCombat("player") then
 		CFFrame:UnregisterEvent("UNIT_HEALTH")
@@ -325,7 +325,7 @@ function SimplePointDisplay:CombatFaderCombatState()
 end
 
 -- Register events for Combat Fader status
-function SimplePointDisplay:UpdateCombatFaderEnabled()
+function cPointDisplay:UpdateCombatFaderEnabled()
 	CFFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 	CFFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
 	CFFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
@@ -333,23 +333,23 @@ function SimplePointDisplay:UpdateCombatFaderEnabled()
 
 	CFFrame:SetScript("OnEvent", function(self, event, ...)
 		if event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED" then
-			SimplePointDisplay:CombatFaderCombatState()
-			SimplePointDisplay:UpdateCFStatus()
+			cPointDisplay:CombatFaderCombatState()
+			cPointDisplay:UpdateCFStatus()
 		elseif event == "UNIT_HEALTH" or event == "UNIT_POWER" or event == "UNIT_DISPLAYPOWER" then
 			local unit = ...
 			if unit == "player" then
-				SimplePointDisplay:UpdateCFStatus()
+				cPointDisplay:UpdateCFStatus()
 			end
 		elseif event == "PLAYER_TARGET_CHANGED" then
-			SimplePointDisplay:UpdateCFStatus()
+			cPointDisplay:UpdateCFStatus()
 		elseif event == "PLAYER_ENTERING_WORLD" then
-			SimplePointDisplay:CombatFaderCombatState()
-			SimplePointDisplay:UpdateCombatFader()
+			cPointDisplay:CombatFaderCombatState()
+			cPointDisplay:UpdateCombatFader()
 		end
 	end)
 
-	SimplePointDisplay:UpdateCombatFader()
-	SimplePointDisplay:FadeFrames()
+	cPointDisplay:UpdateCombatFader()
+	cPointDisplay:FadeFrames()
 end
 
 -- Update Point Bars
@@ -422,7 +422,7 @@ local function SetPointBarTextures(shown, ic, it, tid, i)
 	end
 end
 
-function SimplePointDisplay:UpdatePointDisplay(...)
+function cPointDisplay:UpdatePointDisplay(...)
 	local UpdateList
 	if ... == "ENABLE" then
 		-- Update everything
@@ -500,7 +500,7 @@ local function GetBuffCount(SpellID, ...)
 	return count
 end
 
-function SimplePointDisplay:GetPoints(CurClass, CurType)
+function cPointDisplay:GetPoints(CurClass, CurType)
 	local NewPoints
 	-- General
 	if CurClass == "GENERAL" then
@@ -531,7 +531,7 @@ function SimplePointDisplay:GetPoints(CurClass, CurType)
 end
 
 -- Update all valid Point Displays
-function SimplePointDisplay:UpdatePoints(...)
+function cPointDisplay:UpdatePoints(...)
 	if not LoggedIn then return end
 
 	local HasChanged = false
@@ -571,7 +571,7 @@ function SimplePointDisplay:UpdatePoints(...)
 				if ( db[ic].types[tid].enabled and not db[ic].types[tid].configmode.enabled ) then
 					-- Retrieve new point count
 					local OldPoints = Points[tid]
-					SimplePointDisplay:GetPoints(ic, tid)
+					cPointDisplay:GetPoints(ic, tid)
 					if Points[tid] ~= OldPoints then
 						-- Points have changed, flag for updating
 						HasChanged = true
@@ -583,26 +583,26 @@ function SimplePointDisplay:UpdatePoints(...)
 	end
 
 	-- Update Point Displays
-	if HasChanged then SimplePointDisplay:UpdatePointDisplay(Enable) end
+	if HasChanged then cPointDisplay:UpdatePointDisplay(Enable) end
 end
 
 -- Enable a Point Display
-function SimplePointDisplay:EnablePointDisplay(c, t)
-	SimplePointDisplay:UpdatePoints("ENABLE")
+function cPointDisplay:EnablePointDisplay(c, t)
+	cPointDisplay:UpdatePoints("ENABLE")
 end
 
 -- Disable a Point Display
-function SimplePointDisplay:DisablePointDisplay(c, t)
+function cPointDisplay:DisablePointDisplay(c, t)
 	-- Set to 0 points
 	Points[t] = 0
 	PointsChanged[t] = true
 
 	-- Update Point Displays
-	SimplePointDisplay:UpdatePointDisplay("ENABLE")
+	cPointDisplay:UpdatePointDisplay("ENABLE")
 end
 
 -- Update frame positions/sizes
-function SimplePointDisplay:UpdatePosition()
+function cPointDisplay:UpdatePosition()
 	for ic,vc in pairs(Types) do
 		for it,vt in ipairs(Types[ic].points) do
 			local tid = Types[ic].points[it].id
@@ -719,7 +719,7 @@ function SimplePointDisplay:UpdatePosition()
 end
 
 -- Update BG Panel textures
-function SimplePointDisplay:UpdateBGPanelTextures()
+function cPointDisplay:UpdateBGPanelTextures()
 	local BorderA
 	local BGA
 
@@ -780,7 +780,7 @@ local function VerifyBorder(border)
 end
 
 -- Retrieve Border/Background textures and store in tables
-function SimplePointDisplay:GetTextures()
+function cPointDisplay:GetTextures()
 	for ic,vc in pairs(Types) do
 		for it,vt in ipairs(Types[ic].points) do
 			local tid = Types[ic].points[it].id
@@ -800,7 +800,7 @@ function SimplePointDisplay:GetTextures()
 	end
 end
 
-function SimplePointDisplay:GetClassColors()
+function cPointDisplay:GetClassColors()
 	local CurClassColor
 	for k,v in pairs(Types) do
 		tinsert(ClassColorBarTable, k)
@@ -835,7 +835,7 @@ local function CreateFrames()
 			local tid = Types[ic].points[it].id
 
 			-- BG Panel
-			local FrameName = "SimplePointDisplay_Frames_"..tid
+			local FrameName = "cPointDisplay_Frames_"..tid
 			Frames[ic][tid].bgpanel.frame = CreateFrame("Frame", FrameName, UIParent)
 
 			Frames[ic][tid].bgpanel.bg = Frames[ic][tid].bgpanel.frame:CreateTexture(nil, "ARTWORK")
@@ -849,12 +849,12 @@ local function CreateFrames()
 			Frames[ic][tid].bgpanel.frame:Hide()
 
 			-- Anchor Panel
-			local AnchorFrameName = "SimplePointDisplay_Frames_"..tid.."_avAanchor"
+			local AnchorFrameName = "cPointDisplay_Frames_"..tid.."_avAanchor"
 			Frames[ic][tid].anchor.frame = CreateFrame("Frame", AnchorFrameName, UIParent)
 
 			-- Point bars
 			for i = 1, Types[ic].points[it].barcount do
-				local BarFrameName = "SimplePointDisplay_Frames_"..tid.."_bar"..tostring(i)
+				local BarFrameName = "cPointDisplay_Frames_"..tid.."_bar"..tostring(i)
 				Frames[ic][tid].bars[i].frame = CreateFrame("Frame", BarFrameName, UIParent)
 
 				Frames[ic][tid].bars[i].bg = Frames[ic][tid].bars[i].frame:CreateTexture(nil, "ARTWORK")
@@ -930,37 +930,38 @@ local function CreateTables()
 	end
 end
 
-function SimplePointDisplay:ProfChange()
+function cPointDisplay:ProfChange()
 	if not LoggedIn then return end
 
 	db = self.db.profile
-	SimplePointDisplay:ConfigRefresh()
-	SimplePointDisplay:Refresh()
+	cPointDisplay:ConfigRefresh()
+	cPointDisplay:Refresh()
 end
 
--- Refresh SimplePointDisplay
-function SimplePointDisplay:Refresh()
+-- Refresh cPointDisplay
+function cPointDisplay:Refresh()
 	if not LoggedIn then return end
 
-	SimplePointDisplay:UpdateSpec()
-	SimplePointDisplay:UpdateCombatFaderEnabled()
-	SimplePointDisplay:GetTextures()
-	SimplePointDisplay:UpdateBGPanelTextures()
-	SimplePointDisplay:UpdatePosition()
-	SimplePointDisplay:UpdatePoints("ENABLE")
+	cPointDisplay:UpdateSpec()
+	cPointDisplay:UpdateCombatFaderEnabled()
+	cPointDisplay:GetTextures()
+	cPointDisplay:UpdateBGPanelTextures()
+	cPointDisplay:UpdatePosition()
+	cPointDisplay:UpdatePoints("ENABLE")
 end
 
 -- Hide default UI frames
-function SimplePointDisplay:HideUIElements()
+function cPointDisplay:HideUIElements()
 	if db["GENERAL"].types["cp"].enabled and db["GENERAL"].types["cp"].general.hideui then
-		for i = 1,5 do
-			_G["ComboPoint"..i]:Hide()
-			_G["ComboPoint"..i]:SetScript("OnShow", function(self) self:Hide() end)
+		local CPF = ComboPointPlayerFrame
+		if CPF then
+			CPF:Hide()
+			CPF:SetScript("OnShow", function(self) self:Hide() end)
 		end
 	end
 
 	if db["PALADIN"].types["hp"].enabled and db["PALADIN"].types["hp"].general.hideui then
-		local HPF = _G["PaladinPowerBar"]
+		local HPF = PaladinPowerBarFrame
 		if HPF then
 			HPF:Hide()
 			HPF:SetScript("OnShow", function(self) self:Hide() end)
@@ -968,7 +969,7 @@ function SimplePointDisplay:HideUIElements()
 	end
 
 	if db["WARLOCK"].types["ss"].enabled and db["WARLOCK"].types["ss"].general.hideui then
-		local SSF = _G["ShardBarFrame"]
+		local SSF = WarlockPowerFrame
 		if SSF then
 			SSF:Hide()
 			SSF:SetScript("OnShow", function(self) self:Hide() end)
@@ -984,23 +985,23 @@ function SimplePointDisplay:HideUIElements()
 	end
 end
 
-function SimplePointDisplay:UpdateSpec()
+function cPointDisplay:UpdateSpec()
 	PlayerSpec = GetActiveSpecGroup()
 end
 
-function SimplePointDisplay:PLAYER_ENTERING_WORLD()
-	SimplePointDisplay:UpdateSpec()
-	SimplePointDisplay:UpdatePoints("ENABLE")
-	SimplePointDisplay:UpdatePosition()
+function cPointDisplay:PLAYER_ENTERING_WORLD()
+	cPointDisplay:UpdateSpec()
+	cPointDisplay:UpdatePoints("ENABLE")
+	cPointDisplay:UpdatePosition()
 end
 
 local function ClassColorsUpdate()
 	ClassColors = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[PlayerClass] or RAID_CLASS_COLORS[PlayerClass]
-	SimplePointDisplay:GetClassColors()
-	SimplePointDisplay:UpdatePoints("ENABLE")
+	cPointDisplay:GetClassColors()
+	cPointDisplay:UpdatePoints("ENABLE")
 end
 
-function SimplePointDisplay:PLAYER_LOGIN()
+function cPointDisplay:PLAYER_LOGIN()
 	PlayerClass = select(2, UnitClass("player"))
 
 	-- Build Class list to run updates on
@@ -1010,17 +1011,17 @@ function SimplePointDisplay:PLAYER_LOGIN()
 	},
 
 	-- Register Media
-	LSM:Register("border", "Solid", [[Interface\Addons\SimplePointDisplay\Media\SolidBorder]])
-	LSM:Register("background", "Round-Small", [[Interface\Addons\SimplePointDisplay\Media\Round-Small]])
-	LSM:Register("background", "Round-Smaller", [[Interface\Addons\SimplePointDisplay\Media\Round-Smaller]])
-	LSM:Register("background", "Arrow", [[Interface\Addons\SimplePointDisplay\Media\Arrow]])
-	LSM:Register("background", "Holy Power 1", [[Interface\Addons\SimplePointDisplay\Media\HolyPower1]])
-	LSM:Register("background", "Holy Power 2", [[Interface\Addons\SimplePointDisplay\Media\HolyPower2]])
-	LSM:Register("background", "Holy Power 3", [[Interface\Addons\SimplePointDisplay\Media\HolyPower3]])
-	LSM:Register("background", "Soul Shard", [[Interface\Addons\SimplePointDisplay\Media\SoulShard]])
+	LSM:Register("border", "Solid", [[Interface\Addons\cPointDisplay\Media\SolidBorder]])
+	LSM:Register("background", "Round-Small", [[Interface\Addons\cPointDisplay\Media\Round-Small]])
+	LSM:Register("background", "Round-Smaller", [[Interface\Addons\cPointDisplay\Media\Round-Smaller]])
+	LSM:Register("background", "Arrow", [[Interface\Addons\cPointDisplay\Media\Arrow]])
+	LSM:Register("background", "Holy Power 1", [[Interface\Addons\cPointDisplay\Media\HolyPower1]])
+	LSM:Register("background", "Holy Power 2", [[Interface\Addons\cPointDisplay\Media\HolyPower2]])
+	LSM:Register("background", "Holy Power 3", [[Interface\Addons\cPointDisplay\Media\HolyPower3]])
+	LSM:Register("background", "Soul Shard", [[Interface\Addons\cPointDisplay\Media\SoulShard]])
 
 	-- Hide Elements
-	SimplePointDisplay:HideUIElements()
+	cPointDisplay:HideUIElements()
 
 	-- Register Events
 	-- Throttled Events
@@ -1054,17 +1055,17 @@ function SimplePointDisplay:PLAYER_LOGIN()
 	LoggedIn = true
 
 	-- Refresh Addon
-	SimplePointDisplay:Refresh()
+	cPointDisplay:Refresh()
 end
 
-function SimplePointDisplay:OnInitialize()
-	self.db = LibStub("AceDB-3.0"):New("SimplePointDisplayDB", defaults, "Default")
+function cPointDisplay:OnInitialize()
+	self.db = LibStub("AceDB-3.0"):New("cPointDisplayDB", defaults, "Default")
 
 	self.db.RegisterCallback(self, "OnProfileChanged", "ProfChange")
 	self.db.RegisterCallback(self, "OnProfileCopied", "ProfChange")
 	self.db.RegisterCallback(self, "OnProfileReset", "ProfChange")
 
-	SimplePointDisplay:SetUpInitialOptions()
+	cPointDisplay:SetUpInitialOptions()
 
 	db = self.db.profile
 
