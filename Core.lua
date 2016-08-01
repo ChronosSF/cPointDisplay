@@ -441,8 +441,8 @@ function cPointDisplay:UpdatePointDisplay(...)
 				-- Do we hide the Display
 				if ((Points[tid] == 0 and not db[ic].types[tid].general.showatzero)
 					or (ic ~= PlayerClass and ic ~= "GENERAL") 	-- Not my class
-					or ((PlayerClass ~= "ROGUE") and (ic == "GENERAL") and not UnitHasVehicleUI("player"))	-- Impossible to have Combo Points
-					or (db[ic].types[tid].general.hidein.vehicle and UnitHasVehicleUI("player"))	-- Hide in vehicle
+					or ((PlayerClass ~= "ROGUE" and (PlayerClass ~= "DRUID" and PlayerSpec ~= 1)) and (ic == "GENERAL") and not UnitHasVehicleUI("player"))	-- Impossible to have Combo Points
+					or (db[ic].types[tid].general.hidein.vehicle and UnitHasVehicleUI("player")) -- Hide in vehicle
 					or ((db[ic].types[tid].general.hidein.spec - 1) == PlayerSpec))	-- Hide in spec
 					and not db[ic].types[tid].configmode.enabled then	-- Not in config mode
 						-- Hide Display
@@ -506,7 +506,14 @@ function cPointDisplay:GetPoints(CurClass, CurType)
 	if CurClass == "GENERAL" then
 		-- Combo Points
 		if CurType == "cp" then
-			NewPoints = GetComboPoints(UnitHasVehicleUI("player") and "vehicle" or "player", "target")
+			if (UnitHasVehicleUI("player") and UnitHasVehiclePlayerFrameUI("player")) then
+				NewPoints = GetComboPoints("vehicle")
+				if (NewPoints == 0) then
+					NewPoints = GetComboPoints("vehicle", "vehicle")
+				end
+			else
+				NewPoints = UnitPower("player", SPELL_POWER_COMBO_POINTS)
+			end
 		end
 	-- Paladin
 	elseif CurClass == "PALADIN" then
