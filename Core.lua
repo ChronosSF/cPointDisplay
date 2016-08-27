@@ -26,6 +26,12 @@ cPointDisplay.Types = {
 		points = {
 			[1] = {name = "Arcane Charges", id = "ac", barcount = 4}
 		}
+	},
+	["HUNTER"] = {
+		name = "Hunter",
+		points = {
+			[1] = {name = "Mongoose Bite Charges", id = "mb",  barcount = 3}
+		}
 	}
 }
 local Types = cPointDisplay.Types
@@ -534,6 +540,12 @@ function cPointDisplay:GetPoints(CurClass, CurType)
 			NewPoints = UnitPower("player", SPELL_POWER_ARCANE_CHARGES)
 		end
 	end
+	-- Hunter
+	elseif CurClass == "HUNTER" and PlayerSpec == SPEC_HUNTER_SURVIVAL then
+		-- Mongoose Bite Charges
+		if CurType == "mb" then
+			NewPoints = GetSpellCharges(190928)
+		end
 	Points[CurType] = NewPoints
 end
 
