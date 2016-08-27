@@ -539,13 +539,13 @@ function cPointDisplay:GetPoints(CurClass, CurType)
 		if CurType == "ac" then
 			NewPoints = UnitPower("player", SPELL_POWER_ARCANE_CHARGES)
 		end
-	end
 	-- Hunter
-	elseif CurClass == "HUNTER" and PlayerSpec == SPEC_HUNTER_SURVIVAL then
+	elseif CurClass == "HUNTER" and PlayerSpec == 1 then
 		-- Mongoose Bite Charges
 		if CurType == "mb" then
 			NewPoints = GetSpellCharges(190928)
 		end
+	end
 	Points[CurType] = NewPoints
 end
 
@@ -1063,6 +1063,9 @@ function cPointDisplay:PLAYER_LOGIN()
 	self:RegisterBucketEvent(EventList, UpdateSpeed, "UpdatePoints")
 	-- Instant Events
 	self:RegisterEvent("PLAYER_TARGET_CHANGED", "UpdatePoints")
+	if (PlayerClass == "HUNTER") then
+		self:RegisterEvent("SPELL_UPDATE_CHARGES", "UpdatePoints")
+	end
 
 	-- Class Colors
 	if CUSTOM_CLASS_COLORS then
