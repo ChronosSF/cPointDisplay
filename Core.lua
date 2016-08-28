@@ -523,7 +523,7 @@ function cPointDisplay:GetPoints(CurClass, CurType)
 			end
 		end
 	-- Paladin
-	elseif CurClass == "PALADIN" then
+	elseif CurClass == "PALADIN" and PlayerSpec == 3 then -- hp is only for retribution
 		-- Holy Power
 		if CurType == "hp" then
 			NewPoints = UnitPower("player", SPELL_POWER_HOLY_POWER)
