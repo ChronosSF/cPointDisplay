@@ -446,6 +446,7 @@ function cPointDisplay:UpdatePointDisplay(...)
 
 				-- Do we hide the Display
 				if ((Points[tid] == 0 and not db[ic].types[tid].general.showatzero)
+					or (Points[tid] == nil)
 					or (ic ~= PlayerClass and ic ~= "GENERAL") 	-- Not my class
 					or ((PlayerClass ~= "ROGUE" and (PlayerClass ~= "DRUID" and PlayerSpec ~= 1)) and (ic == "GENERAL") and not UnitHasVehicleUI("player"))	-- Impossible to have Combo Points
 					or (db[ic].types[tid].general.hidein.vehicle and UnitHasVehicleUI("player")) -- Hide in vehicle
@@ -540,7 +541,7 @@ function cPointDisplay:GetPoints(CurClass, CurType)
 			NewPoints = UnitPower("player", SPELL_POWER_ARCANE_CHARGES)
 		end
 	-- Hunter
-	elseif CurClass == "HUNTER" and PlayerSpec == 1 then
+	elseif CurClass == "HUNTER" and PlayerSpec == 3 then
 		-- Mongoose Bite Charges
 		if CurType == "mb" then
 			NewPoints = GetSpellCharges(190928)
@@ -1005,7 +1006,7 @@ function cPointDisplay:HideUIElements()
 end
 
 function cPointDisplay:UpdateSpec()
-	PlayerSpec = GetActiveSpecGroup()
+	PlayerSpec = GetSpecialization()
 end
 
 function cPointDisplay:PLAYER_ENTERING_WORLD()
