@@ -373,7 +373,7 @@ local function GetOptions()
 											cPointDisplay:HideUIElements()
 										end,
 										order = 10,
-										disabled = function() if (tid == "cp" or tid == "hp" or tid == "ss" or tid == "ac") then return false else return true end end,
+										disabled = function() if (tid == "cp" or tid == "hp" or tid == "ss" or tid == "ac" or tid == "ch") then return false else return true end end,
 									},
 									showatzero = {
 										type = "toggle",

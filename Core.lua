@@ -32,6 +32,12 @@ cPointDisplay.Types = {
 		points = {
 			[1] = {name = "Mongoose Bite Charges", id = "mb",  barcount = 3}
 		}
+	},
+	["MONK"] = {
+		name = "Monk",
+		points = {
+			[1] = {name = "Chi", id = "ch",  barcount = 6} --barcount depends on a talent choice and should be adjusted later
+		}
 	}
 }
 local Types = cPointDisplay.Types
@@ -528,6 +534,20 @@ function cPointDisplay:GetPoints(CurClass, CurType)
 		if CurType == "hp" then
 			NewPoints = UnitPower("player", SPELL_POWER_HOLY_POWER)
 		end
+	-- Monk
+	elseif CurClass == "MONK" and PlayerSpec == 3 then -- chi is only for windwalkers
+		-- Chi
+		local maxchi = db["MONK"].types["ch"].barcount
+		local newmax
+		if CurType == "ch" then
+			NewPoints = UnitPower("player", SPELL_POWER_CHI)
+			newmax = UnitPowerMax("player", SPELL_POWER_CHI)
+			if newmax ~= maxchi then
+				db["MONK"].types["ch"].barcount = newmax
+				-- update with new max
+				cPointDisplay:CreateFrames()
+			end
+		end
 	-- Warlock
 	elseif CurClass == "WARLOCK" then
 		-- Soul Shards
@@ -988,6 +1008,14 @@ function cPointDisplay:HideUIElements()
 		end
 	end
 
+	if db["MONK"].types["ch"].enabled and db["MONK"].types["ch"].general.hideui then
+		local CB = MonkHarmonyBarFrame
+		if CB then
+			CB:Hide()
+			CB:SetScript("OnShow", function(self) self:Hide() end)
+		end
+	end
+
 	if db["WARLOCK"].types["ss"].enabled and db["WARLOCK"].types["ss"].general.hideui then
 		local SSF = WarlockPowerFrame
 		if SSF then
@@ -1052,6 +1080,10 @@ function cPointDisplay:PLAYER_LOGIN()
 	}
 	if (PlayerClass == "PALADIN") then
 		tinsert(EventList, "UNIT_POWER")
+	end
+	if (PlayerClass == "MONK") then
+		tinsert(EventList, "UNIT_POWER")
+		tinsert(EventList, "PLAYER_TALENT_UPDATE")
 	end
 	if (PlayerClass == "WARLOCK") then
 		tinsert(EventList, "UNIT_POWER")
