@@ -26,6 +26,12 @@ cPointDisplay.Types = {
 		points = {
 			[1] = {name = "Arcane Charges", id = "ac", barcount = 4}
 		}
+	},
+	["HUNTER"] = {
+		name = "Hunter",
+		points = {
+			[1] = {name = "Mongoose Bite Charges", id = "mb",  barcount = 3}
+		}
 	}
 }
 local Types = cPointDisplay.Types
@@ -440,6 +446,7 @@ function cPointDisplay:UpdatePointDisplay(...)
 
 				-- Do we hide the Display
 				if ((Points[tid] == 0 and not db[ic].types[tid].general.showatzero)
+					or (Points[tid] == nil)
 					or (ic ~= PlayerClass and ic ~= "GENERAL") 	-- Not my class
 					or ((PlayerClass ~= "ROGUE" and (PlayerClass ~= "DRUID" and PlayerSpec ~= 1)) and (ic == "GENERAL") and not UnitHasVehicleUI("player"))	-- Impossible to have Combo Points
 					or (db[ic].types[tid].general.hidein.vehicle and UnitHasVehicleUI("player")) -- Hide in vehicle
@@ -516,7 +523,7 @@ function cPointDisplay:GetPoints(CurClass, CurType)
 			end
 		end
 	-- Paladin
-	elseif CurClass == "PALADIN" then
+	elseif CurClass == "PALADIN" and PlayerSpec == 3 then -- hp is only for retribution
 		-- Holy Power
 		if CurType == "hp" then
 			NewPoints = UnitPower("player", SPELL_POWER_HOLY_POWER)
@@ -532,6 +539,12 @@ function cPointDisplay:GetPoints(CurClass, CurType)
 		-- Arcane Charges
 		if CurType == "ac" then
 			NewPoints = UnitPower("player", SPELL_POWER_ARCANE_CHARGES)
+		end
+	-- Hunter
+	elseif CurClass == "HUNTER" and PlayerSpec == 3 then
+		-- Mongoose Bite Charges
+		if CurType == "mb" then
+			NewPoints = GetSpellCharges(190928)
 		end
 	end
 	Points[CurType] = NewPoints
@@ -993,7 +1006,7 @@ function cPointDisplay:HideUIElements()
 end
 
 function cPointDisplay:UpdateSpec()
-	PlayerSpec = GetActiveSpecGroup()
+	PlayerSpec = GetSpecialization()
 end
 
 function cPointDisplay:PLAYER_ENTERING_WORLD()
@@ -1051,6 +1064,9 @@ function cPointDisplay:PLAYER_LOGIN()
 	self:RegisterBucketEvent(EventList, UpdateSpeed, "UpdatePoints")
 	-- Instant Events
 	self:RegisterEvent("PLAYER_TARGET_CHANGED", "UpdatePoints")
+	if (PlayerClass == "HUNTER") then
+		self:RegisterEvent("SPELL_UPDATE_CHARGES", "UpdatePoints")
+	end
 
 	-- Class Colors
 	if CUSTOM_CLASS_COLORS then
