@@ -32,6 +32,13 @@ cPointDisplay.Types = {
 		points = {
 			[1] = {name = "Mongoose Bite Charges", id = "mb",  barcount = 3}
 		}
+	},
+	["MONK"] = {
+		name = "Monk",
+		points = {
+			[1] = {name = "Chi", id = "c5",  barcount = 5},
+			[2] = {name = "Chi with Ascension", id = "c6",  barcount = 6}
+		}
 	}
 }
 local Types = cPointDisplay.Types
@@ -528,6 +535,14 @@ function cPointDisplay:GetPoints(CurClass, CurType)
 		if CurType == "hp" then
 			NewPoints = UnitPower("player", SPELL_POWER_HOLY_POWER)
 		end
+	-- Monk
+	elseif CurClass == "MONK" and PlayerSpec == 3 then -- chi is only for windwalkers
+		-- Chi
+		local maxchi = UnitPowerMax("player", SPELL_POWER_CHI)
+		if (CurType == "c5" and maxchi == 5) or
+			(CurType == "c6" and maxchi == 6) then
+			NewPoints = UnitPower("player", SPELL_POWER_CHI)
+		end
 	-- Warlock
 	elseif CurClass == "WARLOCK" then
 		-- Soul Shards
@@ -988,6 +1003,14 @@ function cPointDisplay:HideUIElements()
 		end
 	end
 
+	if db["MONK"].types["c5"].enabled and db["MONK"].types["c5"].general.hideui then
+		local CB = MonkHarmonyBarFrame
+		if CB then
+			CB:Hide()
+			CB:SetScript("OnShow", function(self) self:Hide() end)
+		end
+	end
+
 	if db["WARLOCK"].types["ss"].enabled and db["WARLOCK"].types["ss"].general.hideui then
 		local SSF = WarlockPowerFrame
 		if SSF then
@@ -1052,6 +1075,10 @@ function cPointDisplay:PLAYER_LOGIN()
 	}
 	if (PlayerClass == "PALADIN") then
 		tinsert(EventList, "UNIT_POWER")
+	end
+	if (PlayerClass == "MONK") then
+		tinsert(EventList, "UNIT_POWER")
+		tinsert(EventList, "PLAYER_TALENT_UPDATE")
 	end
 	if (PlayerClass == "WARLOCK") then
 		tinsert(EventList, "UNIT_POWER")
