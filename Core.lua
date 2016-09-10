@@ -36,7 +36,8 @@ cPointDisplay.Types = {
 	["MONK"] = {
 		name = "Monk",
 		points = {
-			[1] = {name = "Chi", id = "ch",  barcount = 6} --barcount depends on a talent choice and should be adjusted later
+			[1] = {name = "Chi", id = "c5",  barcount = 5},
+			[2] = {name = "Chi with Ascension", id = "c6",  barcount = 6}
 		}
 	}
 }
@@ -537,16 +538,10 @@ function cPointDisplay:GetPoints(CurClass, CurType)
 	-- Monk
 	elseif CurClass == "MONK" and PlayerSpec == 3 then -- chi is only for windwalkers
 		-- Chi
-		local maxchi = db["MONK"].types["ch"].barcount
-		local newmax
-		if CurType == "ch" then
+		local maxchi = UnitPowerMax("player", SPELL_POWER_CHI)
+		if (CurType == "c5" and maxchi == 5) or
+			(CurType == "c6" and maxchi == 6) then
 			NewPoints = UnitPower("player", SPELL_POWER_CHI)
-			newmax = UnitPowerMax("player", SPELL_POWER_CHI)
-			if newmax ~= maxchi then
-				db["MONK"].types["ch"].barcount = newmax
-				-- update with new max
-				cPointDisplay:CreateFrames()
-			end
 		end
 	-- Warlock
 	elseif CurClass == "WARLOCK" then
@@ -1008,7 +1003,7 @@ function cPointDisplay:HideUIElements()
 		end
 	end
 
-	if db["MONK"].types["ch"].enabled and db["MONK"].types["ch"].general.hideui then
+	if db["MONK"].types["c5"].enabled and db["MONK"].types["c5"].general.hideui then
 		local CB = MonkHarmonyBarFrame
 		if CB then
 			CB:Hide()

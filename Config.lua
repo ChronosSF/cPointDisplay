@@ -75,7 +75,7 @@ local function GetOptions()
 							name = "Class Color Override",
 							desc = "Use Class Colors for Point Displays.",
 							get = function() return db.classcolor.enabled end,
-							set = function(info, value) 
+							set = function(info, value)
 								db.classcolor.enabled = value
 								cPointDisplay:UpdatePoints("ENABLE")
 							end,
@@ -215,7 +215,7 @@ local function GetOptions()
 											min = 0, max = 1, step = 0.05,
 											isPercent = true,
 											get = function(info) return db.classcolor.spark.max end,
-											set = function(info, value) 
+											set = function(info, value)
 												db.classcolor.spark.max = value
 												cPointDisplay:GetClassColors()
 												cPointDisplay:UpdatePoints("ENABLE")
@@ -231,15 +231,15 @@ local function GetOptions()
 			},
 		}
 	end
-	
+
 	-- Create Copy All table
 	local CopyAllFromTable = {}
 	local CopyAllFromTableShort = {}
 	local cnt = 1
 	for ic,vc in pairs(Types) do
 		for it,vt in ipairs(Types[ic].points) do
-			local tid = Types[ic].points[it].id	
-			
+			local tid = Types[ic].points[it].id
+
 			tinsert(CopyAllFromTable, cnt)
 			tinsert(CopyAllFromTableShort, cnt)
 			CopyAllFromTable[cnt] = {
@@ -249,23 +249,23 @@ local function GetOptions()
 				typenum = it,
 			}
 			CopyAllFromTableShort[cnt] = Types[ic].points[it].name
-			
+
 			cnt = cnt + 1
-		end		
+		end
 	end
-	
+
 	local ClassOpts, TypeOpts, BarOpts, TrinketOpts = {}, {}, {}, {}
 	local Opts_ClassOrderCnt = 40
 	local Opts_TypeOrderCnt = 10
-	
+
 	for ic,vc in pairs(Types) do
 		local ClassID = Types[ic].name
-		
+
 		wipe(TypeOpts)
 		for it,vt in ipairs(Types[ic].points) do
-			local tid = Types[ic].points[it].id			
+			local tid = Types[ic].points[it].id
 			local TypeDesc = Types[ic].points[it].name
-			
+
 			TypeOpts[tid] = {
 				type = "group",
 				name = TypeDesc,
@@ -282,7 +282,7 @@ local function GetOptions()
 						name = "Enabled",
 						desc = string.format("Enable/Disable the %s display.", TypeDesc),
 						get = function() return db[ic].types[tid].enabled end,
-						set = function(info, value) 
+						set = function(info, value)
 							db[ic].types[tid].enabled = value
 							db[ic].types[tid].configmode.enabled = false
 							if not value then
@@ -330,7 +330,7 @@ local function GetOptions()
 								type = "toggle",
 								name = "Configuration Mode",
 								get = function(info) return db[ic].types[tid].configmode.enabled end,
-								set = function(info, value) 
+								set = function(info, value)
 									db[ic].types[tid].configmode.enabled = value
 									cPointDisplay:UpdatePoints("ENABLE")
 								end,
@@ -341,7 +341,7 @@ local function GetOptions()
 								name = "Config Mode point count",
 								min = 0, max = Types[ic].points[it].barcount, step = 1,
 								get = function(info) return db[ic].types[tid].configmode.count end,
-								set = function(info, value) 
+								set = function(info, value)
 									db[ic].types[tid].configmode.count = value
 									cPointDisplay:UpdatePoints("ENABLE")
 								end,
@@ -349,7 +349,7 @@ local function GetOptions()
 								order = 20,
 							},
 						},
-					},				
+					},
 					general = {
 						name = "General Settings",
 						type = "group",
@@ -368,12 +368,12 @@ local function GetOptions()
 										desc = "Note: A UI reload (/reload ui) is required to make the default UI display visible again if you have it hidden.",
 										width = "full",
 										get = function(info) return db[ic].types[tid].general.hideui end,
-										set = function(info, value) 
+										set = function(info, value)
 											db[ic].types[tid].general.hideui = value
 											cPointDisplay:HideUIElements()
 										end,
 										order = 10,
-										disabled = function() if (tid == "cp" or tid == "hp" or tid == "ss" or tid == "ac" or tid == "ch") then return false else return true end end,
+										disabled = function() if (tid == "cp" or tid == "hp" or tid == "ss" or tid == "ac" or tid == "c5") then return false else return true end end,
 									},
 									showatzero = {
 										type = "toggle",
@@ -381,11 +381,12 @@ local function GetOptions()
 										desc = "Keep the bar visible even when there are no points/stacks.",
 										width = "full",
 										get = function(info) return db[ic].types[tid].general.showatzero end,
-										set = function(info, value) 
+										set = function(info, value)
 											db[ic].types[tid].general.showatzero = value
 											cPointDisplay:UpdatePoints("ENABLE")
 										end,
 										order = 10,
+										disabled = function() if (tid == "c6" or tid == "c5") then return true else return false end end,
 									},
 									hideempty = {
 										type = "toggle",
@@ -393,7 +394,7 @@ local function GetOptions()
 										desc = "Only show used the number of points/stacks you have. IE. If you have 4 Combo Points, the 5th Combo Point bar will remain hidden.",
 										width = "full",
 										get = function(info) return db[ic].types[tid].general.hideempty end,
-										set = function(info, value) 
+										set = function(info, value)
 											db[ic].types[tid].general.hideempty = value
 											cPointDisplay:UpdatePoints("ENABLE")
 										end,
@@ -411,7 +412,7 @@ local function GetOptions()
 												desc = "Hide when in a Vehicle.",
 												width = "full",
 												get = function(info) return db[ic].types[tid].general.hidein.vehicle end,
-												set = function(info, value) 
+												set = function(info, value)
 													db[ic].types[tid].general.hidein.vehicle = value
 													cPointDisplay:UpdatePoints("ENABLE")
 												end,
@@ -446,7 +447,7 @@ local function GetOptions()
 												desc = string.format("Orientate the %s display vertically.", TypeDesc),
 												width = "full",
 												get = function(info) return db[ic].types[tid].general.direction.vertical end,
-												set = function(info, value) 
+												set = function(info, value)
 													db[ic].types[tid].general.direction.vertical = value
 													cPointDisplay:UpdatePosition()
 												end,
@@ -458,14 +459,14 @@ local function GetOptions()
 												desc = string.format("Reverse the orientation of the %s display.", TypeDesc),
 												width = "full",
 												get = function(info) return db[ic].types[tid].general.direction.reverse end,
-												set = function(info, value) 
+												set = function(info, value)
 													db[ic].types[tid].general.direction.reverse = value
 													cPointDisplay:UpdatePosition()
 												end,
 												order = 20,
 											},
 										},
-									},									
+									},
 								},
 							},
 						},
@@ -509,7 +510,7 @@ local function GetOptions()
 									anchorto = {
 										type = "select",
 										name = "Anchor To",
-										get = function(info) 
+										get = function(info)
 											for k,v in pairs(table_AnchorPoints) do
 												if v == db[ic].types[tid].position.anchorto then return k end
 											end
@@ -526,7 +527,7 @@ local function GetOptions()
 									anchorfrom = {
 										type = "select",
 										name = "Anchor From",
-										get = function(info) 
+										get = function(info)
 											for k,v in pairs(table_AnchorPoints) do
 												if v == db[ic].types[tid].position.anchorfrom then return k end
 											end
@@ -563,7 +564,7 @@ local function GetOptions()
 									strata = {
 										type = "select",
 										name = "Strata",
-										get = function(info) 
+										get = function(info)
 											for k,v in pairs(table_Strata) do
 												if v == db[ic].types[tid].position.framelevel.strata then return k end
 											end
@@ -582,7 +583,7 @@ local function GetOptions()
 										name = "Frame Level",
 										min = 1, max = 50, step = 1,
 										get = function(info) return db[ic].types[tid].position.framelevel.level end,
-										set = function(info, value) 
+										set = function(info, value)
 											db[ic].types[tid].position.framelevel.level = value
 											cPointDisplay:UpdatePosition()
 										end,
@@ -597,7 +598,7 @@ local function GetOptions()
 						type = "group",
 						childGroups = "tab",
 						order = 90,
-						disabled = function() if db[ic].types[tid].enabled then return false else return true end end,					
+						disabled = function() if db[ic].types[tid].enabled then return false else return true end end,
 						args = {
 						},
 					},
@@ -646,7 +647,7 @@ local function GetOptions()
 											cPointDisplay:UpdatePosition()
 										end,
 									},
-								},							
+								},
 							},
 							background = {
 								name = "Background",
@@ -713,7 +714,7 @@ local function GetOptions()
 										name = "Inset",
 										min = -32, max = 32, step = 1,
 										get = function(info) return db[ic].types[tid].bgpanel.border.inset end,
-										set = function(info, value) 
+										set = function(info, value)
 											db[ic].types[tid].bgpanel.border.inset = value
 											cPointDisplay:UpdateBGPanelTextures()
 											cPointDisplay:UpdatePosition()
@@ -770,7 +771,7 @@ local function GetOptions()
 								name = "Enabled",
 								desc = "Enable/Disable combat fading for this Point Display type.",
 								get = function() return db[ic].types[tid].combatfader.enabled end,
-								set = function(info, value) 
+								set = function(info, value)
 									db[ic].types[tid].combatfader.enabled = value
 									cPointDisplay:UpdateCombatFader()
 								end,
@@ -830,14 +831,14 @@ local function GetOptions()
 					},
 				},
 			}
-			
+
 			-- Bar options
 			local CopyBarFromTable = {}
 			for i = 1, Types[ic].points[it].barcount do
 				tinsert(CopyBarFromTable, i)
 				CopyBarFromTable[i] = string.format("%s %s", "Bar", i)
 			end
-			
+
 			wipe(BarOpts)
 			for i = 1, Types[ic].points[it].barcount do
 				local BarID = string.format("%s%s", "bar", i)
@@ -901,7 +902,7 @@ local function GetOptions()
 												cPointDisplay:UpdatePoints("ENABLE")
 											end,
 										},
-									},							
+									},
 								},
 								position = {
 									name = "Position",
@@ -1093,7 +1094,7 @@ local function GetOptions()
 											name = "Inset",
 											min = -32, max = 32, step = 1,
 											get = function(info) return db[ic].types[tid].bars[i].border.empty.inset end,
-											set = function(info, value) 
+											set = function(info, value)
 												db[ic].types[tid].bars[i].border.empty.inset = value
 												cPointDisplay:UpdatePoints("ENABLE")
 											end,
@@ -1151,7 +1152,7 @@ local function GetOptions()
 											name = "Inset",
 											min = -32, max = 32, step = 1,
 											get = function(info) return db[ic].types[tid].bars[i].border.full.inset end,
-											set = function(info, value) 
+											set = function(info, value)
 												db[ic].types[tid].bars[i].border.full.inset = value
 												cPointDisplay:UpdatePoints("ENABLE")
 											end,
@@ -1293,7 +1294,7 @@ local function GetOptions()
 												cPointDisplay:UpdatePosition()
 											end,
 										},
-									},							
+									},
 								},
 								bg = {
 									type = "group",
@@ -1357,21 +1358,21 @@ local function GetOptions()
 											},
 										},
 									},
-								},								
+								},
 							},
 						},
 					},
 				};
 			end
-			
+
 			-- Fill out new Types table with it's Bars
 			for key, val in pairs(BarOpts) do
 				TypeOpts[tid].args.bars.args[key] = (type(val) == "function") and val() or val
 			end
-			
+
 			Opts_TypeOrderCnt = Opts_TypeOrderCnt + 10;
 		end
-		
+
 		-- Create new Class table
 		ClassOpts[ic] = {
 			name = ClassID,
@@ -1383,10 +1384,10 @@ local function GetOptions()
 		for key, val in pairs(TypeOpts) do
 			ClassOpts[ic].args[key] = (type(val) == "function") and val() or val
 		end
-		
+
 		Opts_ClassOrderCnt = Opts_ClassOrderCnt + 10;
 	end
-	
+
 	-- Fill out Options table with all Classes
 	for key, val in pairs(ClassOpts) do
 		options.args[key] = (type(val) == "function") and val() or val
@@ -1435,7 +1436,7 @@ function cPointDisplay:CopyAllSettings(FromTable, ToTable, FromIC, ToIC, FromTID
 			ToTable[i] = FromTable[i]
 		end
 	end
-	
+
 	-- Erase any excess Point Bar info
 	if Types[FromIC].points[FromNum].barcount > Types[ToIC].points[ToNum].barcount then
 		local FromCount = Types[FromIC].points[FromNum].barcount + 1
@@ -1444,11 +1445,11 @@ function cPointDisplay:CopyAllSettings(FromTable, ToTable, FromIC, ToIC, FromTID
 			db[ToIC].types[ToTID].bars[i] = nil
 		end
 	end
-	
+
 	-- Disable config mode
 	db[ToIC].types[ToTID].configmode.enabled = false
 	db[ToIC].types[ToTID].configmode.count = 2
-	
+
 	return true
 end
 
@@ -1507,7 +1508,7 @@ local function GetIntOptions()
 				openoptions = {
 					type = "execute",
 					name = "Open config...",
-					func = function() 
+					func = function()
 						cPointDisplay:OpenOptions()
 					end,
 					order = 20,
@@ -1535,7 +1536,7 @@ function cPointDisplay:SetUpInitialOptions()
 	-- Chat commands
 	self:RegisterChatCommand("cpd", "ChatCommand")
 	self:RegisterChatCommand("cPointDisplay", "ChatCommand")
-	
+
 	-- Interface panel options
 	LibStub("AceConfig-3.0"):RegisterOptionsTable("cPointDisplay-Int", GetIntOptions)
 	self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("cPointDisplay-Int", "cPointDisplay")
@@ -1543,13 +1544,13 @@ end
 
 function cPointDisplay:SetUpOptions()
 	db = self.db.profile
-	
+
 	-- Primary options
 	GetOptions()
-	
+
 	options.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)
 	options.args.profiles.order = 10000
-	
+
 	LibStub("AceConfig-3.0"):RegisterOptionsTable("cPointDisplay", options)
 	LibStub("AceConfigDialog-3.0"):SetDefaultSize("cPointDisplay", 800, 600)
 end
