@@ -2,7 +2,7 @@
 ## Title: |cFFFF9933c|rPointDisplay
 ## Author: Nibelheim, ChronosSF
 ## Notes: Customizable graphical point display (Combo Points, Holy Power, Soul Shards, etc.). Fan update of nibPointDisplay by Nibelheim.
-## Version: 7.0.3
+## Version: 7.3.0
 ## SavedVariables: cPointDisplayDB
 ## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets
 
