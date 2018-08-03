@@ -1057,7 +1057,7 @@ function cPointDisplay:PLAYER_LOGIN()
 	-- Register Events
 	-- Throttled Events
 	local EventList = {
-		"UNIT_COMBO_POINTS",
+	--	"UNIT_COMBO_POINTS",
 		"VEHICLE_UPDATE",
 		"UNIT_AURA",
 	}
