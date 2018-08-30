@@ -28,12 +28,6 @@ cPointDisplay.Types = {
 			[1] = {name = "Arcane Charges", id = "ac", barcount = 4}
 		}
 	},
-	["HUNTER"] = {
-		name = "Hunter",
-		points = {
-			[1] = {name = "Mongoose Bite Charges", id = "mb",  barcount = 3}
-		}
-	},
 	["MONK"] = {
 		name = "Monk",
 		points = {
@@ -240,16 +234,16 @@ local CFStatus = nil
 -- Power 'Full' check
 local power_check = {
 	MANA = function()
-		return UnitMana("player") < UnitManaMax("player")
+		return UnitPower("player", 0) < UnitPowerMax("player", 0)
 	end,
 	RAGE = function()
-		return UnitMana("player") > 0
+		return UnitPower("player", 1) > 0
 	end,
 	ENERGY = function()
-		return UnitMana("player") < UnitManaMax("player")
+		return UnitPower("player", 3) < UnitPowerMax("player", 3)
 	end,
 	RUNICPOWER = function()
-		return UnitMana("player") > 0
+		return UnitPower("player", 6) > 0
 	end,
 }
 
@@ -329,11 +323,11 @@ function cPointDisplay:CombatFaderCombatState()
 	-- If in combat, then don't worry about health/power events
 	if UnitAffectingCombat("player") then
 		CFFrame:UnregisterEvent("UNIT_HEALTH")
-		CFFrame:UnregisterEvent("UNIT_POWER")
+		CFFrame:UnregisterEvent("UNIT_POWER_UPDATE")
 		CFFrame:UnregisterEvent("UNIT_DISPLAYPOWER")
 	else
 		CFFrame:RegisterEvent("UNIT_HEALTH")
-		CFFrame:RegisterEvent("UNIT_POWER")
+		CFFrame:RegisterEvent("UNIT_POWER_UPDATE")
 		CFFrame:RegisterEvent("UNIT_DISPLAYPOWER")
 	end
 end
@@ -349,7 +343,7 @@ function cPointDisplay:UpdateCombatFaderEnabled()
 		if event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED" then
 			cPointDisplay:CombatFaderCombatState()
 			cPointDisplay:UpdateCFStatus()
-		elseif event == "UNIT_HEALTH" or event == "UNIT_POWER" or event == "UNIT_DISPLAYPOWER" then
+		elseif event == "UNIT_HEALTH" or event == "UNIT_POWER_UPDATE" or event == "UNIT_DISPLAYPOWER" then
 			local unit = ...
 			if unit == "player" then
 				cPointDisplay:UpdateCFStatus()
@@ -527,10 +521,10 @@ function cPointDisplay:GetPoints(CurClass, CurType)
 					NewPoints = GetComboPoints("vehicle", "vehicle")
 				end
 			else
-				local maxcp = UnitPowerMax("player", SPELL_POWER_COMBO_POINTS)
+				local maxcp = UnitPowerMax("player", 4)
 				if (CurType == "cp" and maxcp == 5) or
 					(CurType == "cp6" and maxcp == 6) then
-					NewPoints = UnitPower("player", SPELL_POWER_COMBO_POINTS)
+					NewPoints = UnitPower("player", 4)
 				end
 			end
 		end
@@ -538,33 +532,27 @@ function cPointDisplay:GetPoints(CurClass, CurType)
 	elseif CurClass == "PALADIN" and PlayerSpec == 3 then -- hp is only for retribution
 		-- Holy Power
 		if CurType == "hp" then
-			NewPoints = UnitPower("player", SPELL_POWER_HOLY_POWER)
+			NewPoints = UnitPower("player", Enum.PowerType.HolyPower)
 		end
 	-- Monk
 	elseif CurClass == "MONK" and PlayerSpec == 3 then -- chi is only for windwalkers
 		-- Chi
-		local maxchi = UnitPowerMax("player", SPELL_POWER_CHI)
+		local maxchi = UnitPowerMax("player", Enum.PowerType.Chi)
 		if (CurType == "c5" and maxchi == 5) or
 			(CurType == "c6" and maxchi == 6) then
-			NewPoints = UnitPower("player", SPELL_POWER_CHI)
+			NewPoints = UnitPower("player", Enum.PowerType.Chi)
 		end
 	-- Warlock
 	elseif CurClass == "WARLOCK" then
 		-- Soul Shards
 		if CurType == "ss" then
-			NewPoints = UnitPower("player", SPELL_POWER_SOUL_SHARDS)
+			NewPoints = UnitPower("player", Enum.PowerType.SoulShards)
 		end
 	-- Mage
 	elseif CurClass == "MAGE" and PlayerSpec == SPEC_MAGE_ARCANE then
 		-- Arcane Charges
 		if CurType == "ac" then
-			NewPoints = UnitPower("player", SPELL_POWER_ARCANE_CHARGES)
-		end
-	-- Hunter
-	elseif CurClass == "HUNTER" and PlayerSpec == 3 then
-		-- Mongoose Bite Charges
-		if CurType == "mb" then
-			NewPoints = GetSpellCharges(190928)
+			NewPoints = UnitPower("player", Enum.PowerType.ArcaneCharges)
 		end
 	end
 	Points[CurType] = NewPoints
@@ -1074,23 +1062,23 @@ function cPointDisplay:PLAYER_LOGIN()
 	-- Register Events
 	-- Throttled Events
 	local EventList = {
-		"UNIT_COMBO_POINTS",
+	--	"UNIT_COMBO_POINTS",
 		"VEHICLE_UPDATE",
 		"UNIT_AURA",
 	}
 	if (PlayerClass == "PALADIN") then
-		tinsert(EventList, "UNIT_POWER")
+		tinsert(EventList, "UNIT_POWER_UPDATE")
 	end
 	if (PlayerClass == "MONK") then
-		tinsert(EventList, "UNIT_POWER")
+		tinsert(EventList, "UNIT_POWER_UPDATE")
 		tinsert(EventList, "PLAYER_TALENT_UPDATE")
 	end
 	if (PlayerClass == "WARLOCK") then
-		tinsert(EventList, "UNIT_POWER")
+		tinsert(EventList, "UNIT_POWER_UPDATE")
 		tinsert(EventList, "UNIT_DISPLAYPOWER")
 	end
 	if (PlayerClass == "MAGE") then
-		tinsert(EventList, "UNIT_POWER")
+		tinsert(EventList, "UNIT_POWER_UPDATE")
 	end
 	local UpdateSpeed = (1 / db.updatespeed)
 	self:RegisterBucketEvent(EventList, UpdateSpeed, "UpdatePoints")
@@ -1098,6 +1086,9 @@ function cPointDisplay:PLAYER_LOGIN()
 	self:RegisterEvent("PLAYER_TARGET_CHANGED", "UpdatePoints")
 	if (PlayerClass == "HUNTER") then
 		self:RegisterEvent("SPELL_UPDATE_CHARGES", "UpdatePoints")
+	end
+	if (PlayerClass == "ROGUE" or PlayerClass == "DRUID") then
+		self:RegisterEvent("UNIT_POWER_UPDATE", "UpdatePoints")
 	end
 
 	-- Class Colors
