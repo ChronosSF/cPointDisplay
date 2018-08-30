@@ -514,7 +514,7 @@ function cPointDisplay:GetPoints(CurClass, CurType)
 	-- General
 	if CurClass == "GENERAL" then
 		-- Combo Points
-		if CurType == "cp" then
+		if (CurType == "cp") or (CurType == "cp6") then
 			if (UnitHasVehicleUI("player") and UnitHasVehiclePlayerFrameUI("player")) then
 				NewPoints = GetComboPoints("vehicle")
 				if (NewPoints == 0) then
