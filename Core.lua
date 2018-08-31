@@ -7,6 +7,7 @@ cPointDisplay.Types = {
 		name = "General",
 		points = {
 			[1] = {name = "Combo Points", id = "cp", barcount = 5},
+			[2] = {name = "Combo Points with Deeper Stratagem", id = "cp6", barcount = 6},
 		}
 	},
 	["PALADIN"] = {
@@ -513,14 +514,18 @@ function cPointDisplay:GetPoints(CurClass, CurType)
 	-- General
 	if CurClass == "GENERAL" then
 		-- Combo Points
-		if CurType == "cp" then
+		if (CurType == "cp") or (CurType == "cp6") then
 			if (UnitHasVehicleUI("player") and UnitHasVehiclePlayerFrameUI("player")) then
 				NewPoints = GetComboPoints("vehicle")
 				if (NewPoints == 0) then
 					NewPoints = GetComboPoints("vehicle", "vehicle")
 				end
 			else
-				NewPoints = UnitPower("player", 4)
+				local maxcp = UnitPowerMax("player", 4)
+				if (CurType == "cp" and maxcp == 5) or
+					(CurType == "cp6" and maxcp == 6) then
+					NewPoints = UnitPower("player", 4)
+				end
 			end
 		end
 	-- Paladin
