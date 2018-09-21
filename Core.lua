@@ -25,7 +25,8 @@ cPointDisplay.Types = {
 	["MAGE"] = {
 		name = "Mage",
 		points = {
-			[1] = {name = "Arcane Charges", id = "ac", barcount = 4}
+			[1] = {name = "Arcane Charges", id = "ac", barcount = 4},
+			[2] = {name = "Icicles", id = "ic", barcount = 5}
 		}
 	},
 	["MONK"] = {
@@ -549,10 +550,12 @@ function cPointDisplay:GetPoints(CurClass, CurType)
 			NewPoints = UnitPower("player", Enum.PowerType.SoulShards)
 		end
 	-- Mage
-	elseif CurClass == "MAGE" and PlayerSpec == SPEC_MAGE_ARCANE then
+	elseif CurClass == "MAGE" then
 		-- Arcane Charges
-		if CurType == "ac" then
+		if CurType == "ac" and PlayerSpec == SPEC_MAGE_ARCANE then
 			NewPoints = UnitPower("player", Enum.PowerType.ArcaneCharges)
+		elseif CurType == "ic" and PlayerSpec == SPEC_MAGE_FROST then
+			NewPoints = GetBuffCount(148022) -- Icicle buff id
 		end
 	end
 	Points[CurType] = NewPoints
