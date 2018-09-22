@@ -25,7 +25,8 @@ cPointDisplay.Types = {
 	["MAGE"] = {
 		name = "Mage",
 		points = {
-			[1] = {name = "Arcane Charges", id = "ac", barcount = 4}
+			[1] = {name = "Arcane Charges", id = "ac", barcount = 4},
+			[2] = {name = "Icicles", id = "ic", barcount = 5}
 		}
 	},
 	["MONK"] = {
@@ -492,21 +493,18 @@ function cPointDisplay:UpdatePointDisplay(...)
 	end
 end
 
--- Point retrieval
-local function GetDebuffCount(SpellID, ...)
-	if not SpellID then return end
-	local unit = ... or "target"
-	local _,_,_,count,_,_,_,caster = UnitDebuff(unit, SpellID)
-	if ( (count == nil) or (caster ~= "player") ) then count = 0 end	-- Make sure Count isn't Nil, and only show Debuffs cast by me
-	return count
-end
-
-local function GetBuffCount(SpellID, ...)
-	if not SpellID then return end
+local function GetBuffCount(Spell, ...)
+	if not Spell then return end
 	local unit = ... or "player"
-	local _,_,_,count = UnitAura(unit, SpellID)
-	if (count == nil) then count = 0 end
-	return count
+	for i = 1, 255 do
+		local name, _, count, _, _, _, _, _, _, id = UnitAura(unit, i, "HELPFUL")
+		if not name then return end
+		if Spell == id or Spell == name then
+			if (count == nil) then count = 0 end
+			return count
+		end
+	end
+	return 0
 end
 
 function cPointDisplay:GetPoints(CurClass, CurType)
@@ -549,10 +547,13 @@ function cPointDisplay:GetPoints(CurClass, CurType)
 			NewPoints = UnitPower("player", Enum.PowerType.SoulShards)
 		end
 	-- Mage
-	elseif CurClass == "MAGE" and PlayerSpec == SPEC_MAGE_ARCANE then
+	elseif CurClass == "MAGE" then
 		-- Arcane Charges
-		if CurType == "ac" then
+		if CurType == "ac" and PlayerSpec == SPEC_MAGE_ARCANE then
 			NewPoints = UnitPower("player", Enum.PowerType.ArcaneCharges)
+		-- Icicles
+		elseif CurType == "ic" and PlayerSpec == 3 then
+			NewPoints = GetBuffCount(205473) -- Icicle buff id
 		end
 	end
 	Points[CurType] = NewPoints

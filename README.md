@@ -14,7 +14,7 @@ Then open the renamed file and change the string `nibPointDisplayDB` to `cPointD
 - Soul Shards
 - Arcane Charges
 - Chi
-- ~~Mongoose Bite Charges~~ (removed for 8.0)
+- *Icicles (new)*
 
 ### Requests
 
