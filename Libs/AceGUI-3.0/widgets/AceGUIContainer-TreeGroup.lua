@@ -2,11 +2,11 @@
 TreeGroup Container
 Container that uses a tree control to switch between groups.
 -------------------------------------------------------------------------------]]
-local Type, Version = "TreeGroup", 40
+local Type, Version = "TreeGroup", 41
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
-local IsLegion = select(4, GetBuildInfo()) >= 70000
+local WoW80 = select(4, GetBuildInfo()) >= 80000
 
 -- Lua APIs
 local next, pairs, ipairs, assert, type = next, pairs, ipairs, assert, type
@@ -59,7 +59,6 @@ end
 local function UpdateButton(button, treeline, selected, canExpand, isExpanded)
 	local self = button.obj
 	local toggle = button.toggle
-	local frame = self.frame
 	local text = treeline.text or ""
 	local icon = treeline.icon
 	local iconCoords = treeline.iconCoords
@@ -78,8 +77,6 @@ local function UpdateButton(button, treeline, selected, canExpand, isExpanded)
 		button:UnlockHighlight()
 		button.selected = false
 	end
-	local normalTexture = button:GetNormalTexture()
-	local line = button.line
 	button.level = level
 	if ( level == 1 ) then
 		button:SetNormalFontObject("GameFontNormal")
@@ -114,11 +111,11 @@ local function UpdateButton(button, treeline, selected, canExpand, isExpanded)
 	
 	if canExpand then
 		if not isExpanded then
-			toggle:SetNormalTexture("Interface\\Buttons\\UI-PlusButton-UP")
-			toggle:SetPushedTexture("Interface\\Buttons\\UI-PlusButton-DOWN")
+			toggle:SetNormalTexture(130838) -- Interface\\Buttons\\UI-PlusButton-UP
+			toggle:SetPushedTexture(130836) -- Interface\\Buttons\\UI-PlusButton-DOWN
 		else
-			toggle:SetNormalTexture("Interface\\Buttons\\UI-MinusButton-UP")
-			toggle:SetPushedTexture("Interface\\Buttons\\UI-MinusButton-DOWN")
+			toggle:SetNormalTexture(130821) -- Interface\\Buttons\\UI-MinusButton-UP
+			toggle:SetPushedTexture(130820) -- Interface\\Buttons\\UI-MinusButton-DOWN
 		end
 		toggle:Show()
 	else
@@ -164,7 +161,7 @@ end
 local function FirstFrameUpdate(frame)
 	local self = frame.obj
 	frame:SetScript("OnUpdate", nil)
-	self:RefreshTree()
+	self:RefreshTree(nil, true)
 end
 
 local function BuildUniqueValue(...)
@@ -201,7 +198,6 @@ end
 
 local function Button_OnDoubleClick(button)
 	local self = button.obj
-	local status = self.status or self.localstatus
 	local status = (self.status or self.localstatus).groups
 	status[button.uniquevalue] = not status[button.uniquevalue]
 	self:RefreshTree()
@@ -302,6 +298,8 @@ local methods = {
 
 	["OnRelease"] = function(self)
 		self.status = nil
+		self.tree = nil
+		self.frame:SetScript("OnUpdate", nil)
 		for k, v in pairs(self.localstatus) do
 			if k == "groups" then
 				for k2 in pairs(v) do
@@ -374,7 +372,6 @@ local methods = {
 
 	["BuildLevel"] = function(self, tree, level, parent)
 		local groups = (self.status or self.localstatus).groups
-		local hasChildren = self.hasChildren
 		
 		for i, v in ipairs(tree) do
 			if v.children then
@@ -390,8 +387,8 @@ local methods = {
 		end
 	end,
 
-	["RefreshTree"] = function(self,scrollToSelection)
-		local buttons = self.buttons 
+	["RefreshTree"] = function(self,scrollToSelection,fromOnUpdate)
+		local buttons = self.buttons
 		local lines = self.lines
 
 		for i, v in ipairs(buttons) do
@@ -421,6 +418,12 @@ local methods = {
 
 		local maxlines = (floor(((self.treeframe:GetHeight()or 0) - 20 ) / 18))
 		if maxlines <= 0 then return end
+
+		-- workaround for lag spikes on WoW 8.0
+		if WoW80 and self.frame:GetParent() == UIParent and not fromOnUpdate then
+			self.frame:SetScript("OnUpdate", FirstFrameUpdate)
+			return
+		end
 
 		local first, last
 		
@@ -672,12 +675,7 @@ local function Constructor()
 
 	local scrollbg = scrollbar:CreateTexture(nil, "BACKGROUND")
 	scrollbg:SetAllPoints(scrollbar)
-
-	if IsLegion then
-		scrollbg:SetColorTexture(0,0,0,0.4)
-	else
-		scrollbg:SetTexture(0,0,0,0.4)
-	end
+	scrollbg:SetColorTexture(0,0,0,0.4)
 
 	local border = CreateFrame("Frame",nil,frame)
 	border:SetPoint("TOPLEFT", treeframe, "TOPRIGHT")
