@@ -11,10 +11,12 @@ Then open the renamed file and change the string `nibPointDisplayDB` to `cPointD
 
 - Combo Points
 - Holy Power
-- Soul Shards
+- Soul Shards* 
 - Arcane Charges
 - Chi
-- *Icicles (new)*
+- Icicles
+
+***Note***: For Soul Shards both full and fractional values are supported. Enable only one of them. The `Soul Shards Precise` units will work properly for Demonology and Affliction.
 
 ### Requests
 

@@ -20,6 +20,7 @@ cPointDisplay.Types = {
 		name = "Warlock",
 		points = {
 			[1] = {name = "Soul Shards", id = "ss", barcount = 5},
+			[2] = {name = "Soul Shards Precise", id = "ssf", barcount = 5},
 		}
 	},
 	["MAGE"] = {
@@ -361,73 +362,115 @@ function cPointDisplay:UpdateCombatFaderEnabled()
 	cPointDisplay:FadeFrames()
 end
 
--- Update Point Bars
-local function SetPointBarTextures(shown, ic, it, tid, i)
-	-- Visible Bar
-	if shown then
-		-- BG
-		Frames[ic][tid].bars[i].bg:SetTexture(BG[ic][tid].bars[i].full)
+local function SetEmptyBarTextures(ic, it, tid, i)
+	local cc = ClassColorBarTable[ic]
+	local dbc = db[ic].types[tid].bars[i]
+	Frames[ic][tid].bars[i].bg:SetTexture(BG[ic][tid].bars[i].empty)
+	Frames[ic][tid].bars[i].border:SetBackdrop({bgFile = "", edgeFile = Borders[ic][tid].bars[i].empty, edgeSize = dbc.border.empty.edgesize, tile = false, tileSize = 0, insets = {left = 0, right = 0, top = 0, bottom = 0}})
+	Frames[ic][tid].bars[i].border:SetHeight(dbc.size.height - dbc.border.empty.inset)
+	Frames[ic][tid].bars[i].border:SetWidth(dbc.size.width - dbc.border.empty.inset)
 
-		-- Border
-		Frames[ic][tid].bars[i].border:SetBackdrop({bgFile = "", edgeFile = Borders[ic][tid].bars[i].full, edgeSize = db[ic].types[tid].bars[i].border.full.edgesize, tile = false, tileSize = 0, insets = {left = 0, right = 0, top = 0, bottom = 0}})
-		Frames[ic][tid].bars[i].border:SetHeight(db[ic].types[tid].bars[i].size.height - db[ic].types[tid].bars[i].border.full.inset)
-		Frames[ic][tid].bars[i].border:SetWidth(db[ic].types[tid].bars[i].size.width - db[ic].types[tid].bars[i].border.full.inset)
+	if db.classcolor.enabled then
+		Frames[ic][tid].bars[i].bg:SetVertexColor(cc.bg.empty.r, cc.bg.empty.g, cc.bg.empty.b, dbc.bg.empty.color.a)
+		Frames[ic][tid].bars[i].border:SetBackdropBorderColor(cc.border.empty.r, cc.border.empty.g, cc.border.empty.b, dbc.border.empty.color.a)
+	else
+		Frames[ic][tid].bars[i].bg:SetVertexColor(dbc.bg.empty.color.r, dbc.bg.empty.color.g, dbc.bg.empty.color.b, dbc.bg.empty.color.a)
+		Frames[ic][tid].bars[i].border:SetBackdropBorderColor(dbc.border.empty.color.r, dbc.border.empty.color.g, dbc.border.empty.color.b, dbc.border.empty.color.a)
+	end
+end
+
+local function SetPartialBarTextures(ic, it, tid, i, partial)
+	local cc = ClassColorBarTable[ic]
+	local dbc = db[ic].types[tid].bars[i]
+	local toColorize = partial
+
+	for j = 0, 8 do
+		Frames[ic][tid].bars[i].subbars[j].frame:Show()
+
+		-- BG
+		Frames[ic][tid].bars[i].subbars[j].bg:SetTexture(BG[ic][tid].bars[i].full)
 
 		-- Colors
-		if Points[tid] < Types[ic].points[it].barcount then
-			if db.classcolor.enabled then
-				Frames[ic][tid].bars[i].bg:SetVertexColor(ClassColorBarTable[ic].bg.normal.r, ClassColorBarTable[ic].bg.normal.g, ClassColorBarTable[ic].bg.normal.b, db[ic].types[tid].bars[i].bg.full.color.a)
-				Frames[ic][tid].bars[i].border:SetBackdropBorderColor(ClassColorBarTable[ic].border.normal.r, ClassColorBarTable[ic].border.normal.g, ClassColorBarTable[ic].border.normal.b, db[ic].types[tid].bars[i].border.full.color.a)
-			else
-				Frames[ic][tid].bars[i].bg:SetVertexColor(db[ic].types[tid].bars[i].bg.full.color.r, db[ic].types[tid].bars[i].bg.full.color.g, db[ic].types[tid].bars[i].bg.full.color.b, db[ic].types[tid].bars[i].bg.full.color.a)
-				Frames[ic][tid].bars[i].border:SetBackdropBorderColor(db[ic].types[tid].bars[i].border.full.color.r, db[ic].types[tid].bars[i].border.full.color.g, db[ic].types[tid].bars[i].border.full.color.b, db[ic].types[tid].bars[i].border.full.color.a)
-			end
+		if j < toColorize then
+			Frames[ic][tid].bars[i].subbars[j].frame:Show()
+			if db.classcolor.enabled then Frames[ic][tid].bars[i].subbars[j].bg:SetVertexColor(cc.bg.normal.r, cc.bg.normal.g, cc.bg.normal.b, dbc.bg.full.color.a)
+			else Frames[ic][tid].bars[i].subbars[j].bg:SetVertexColor(dbc.bg.full.color.r, dbc.bg.full.color.g, dbc.bg.full.color.b, dbc.bg.full.color.a) end
 		else
-			if db.classcolor.enabled then
-				Frames[ic][tid].bars[i].bg:SetVertexColor(ClassColorBarTable[ic].bg.max.r, ClassColorBarTable[ic].bg.max.g, ClassColorBarTable[ic].bg.max.b, db[ic].types[tid].bars[i].bg.full.maxcolor.a)
-				Frames[ic][tid].bars[i].border:SetBackdropBorderColor(ClassColorBarTable[ic].border.max.r, ClassColorBarTable[ic].border.max.g, ClassColorBarTable[ic].border.max.b, db[ic].types[tid].bars[i].bg.full.maxcolor.a)
-			else
-				Frames[ic][tid].bars[i].bg:SetVertexColor(db[ic].types[tid].bars[i].bg.full.maxcolor.r, db[ic].types[tid].bars[i].bg.full.maxcolor.g, db[ic].types[tid].bars[i].bg.full.maxcolor.b, db[ic].types[tid].bars[i].bg.full.maxcolor.a)
-				Frames[ic][tid].bars[i].border:SetBackdropBorderColor(db[ic].types[tid].bars[i].border.full.maxcolor.r, db[ic].types[tid].bars[i].border.full.maxcolor.g, db[ic].types[tid].bars[i].border.full.maxcolor.b, db[ic].types[tid].bars[i].border.full.maxcolor.a)
-			end
+			Frames[ic][tid].bars[i].subbars[j].frame:Hide()
+			if db.classcolor.enabled then Frames[ic][tid].bars[i].subbars[j].bg:SetVertexColor(cc.bg.max.r, cc.bg.max.g, cc.bg.max.b, dbc.bg.full.maxcolor.a)
+			else Frames[ic][tid].bars[i].subbars[j].bg:SetVertexColor(dbc.bg.full.maxcolor.r, dbc.bg.full.maxcolor.g, dbc.bg.full.maxcolor.b, dbc.bg.full.maxcolor.a) end
 		end
+	end
+end
 
-		-- Spark
-		if db[ic].types[tid].bars[i].spark.enabled then
-			Frames[ic][tid].bars[i].spark.frame:Show()
-			Frames[ic][tid].bars[i].spark.bg:SetTexture(BG[ic][tid].bars[i].spark)
-			if Points[tid] < Types[ic].points[it].barcount then
-				-- Normal color
-				if db.classcolor.enabled then
-					Frames[ic][tid].bars[i].spark.bg:SetVertexColor(ClassColorBarTable[ic].spark.normal.r, ClassColorBarTable[ic].spark.normal.g, ClassColorBarTable[ic].spark.normal.b, db[ic].types[tid].bars[i].spark.bg.color.a)
-				else
-					Frames[ic][tid].bars[i].spark.bg:SetVertexColor(db[ic].types[tid].bars[i].spark.bg.color.r, db[ic].types[tid].bars[i].spark.bg.color.g, db[ic].types[tid].bars[i].spark.bg.color.b, db[ic].types[tid].bars[i].spark.bg.color.a)
-				end
-			else
-				-- Max color
-				if db.classcolor.enabled then
-					Frames[ic][tid].bars[i].spark.bg:SetVertexColor(ClassColorBarTable[ic].spark.max.r, ClassColorBarTable[ic].spark.max.g, ClassColorBarTable[ic].spark.max.b, db[ic].types[tid].bars[i].spark.bg.maxcolor.a)
-				else
-					Frames[ic][tid].bars[i].spark.bg:SetVertexColor(db[ic].types[tid].bars[i].spark.bg.maxcolor.r, db[ic].types[tid].bars[i].spark.bg.maxcolor.g, db[ic].types[tid].bars[i].spark.bg.maxcolor.b, db[ic].types[tid].bars[i].spark.bg.maxcolor.a)
-				end
-			end
-		else
-			Frames[ic][tid].bars[i].spark.frame:Hide()
-		end
-	-- Empty Bar
-	else
-		Frames[ic][tid].bars[i].bg:SetTexture(BG[ic][tid].bars[i].empty)
-		Frames[ic][tid].bars[i].border:SetBackdrop({bgFile = "", edgeFile = Borders[ic][tid].bars[i].empty, edgeSize = db[ic].types[tid].bars[i].border.empty.edgesize, tile = false, tileSize = 0, insets = {left = 0, right = 0, top = 0, bottom = 0}})
-		Frames[ic][tid].bars[i].border:SetHeight(db[ic].types[tid].bars[i].size.height - db[ic].types[tid].bars[i].border.empty.inset)
-		Frames[ic][tid].bars[i].border:SetWidth(db[ic].types[tid].bars[i].size.width - db[ic].types[tid].bars[i].border.empty.inset)
+local function SetPointBarTextures(ic, it, tid, i, points)
+	local cc = ClassColorBarTable[ic]
+	local dbc = db[ic].types[tid].bars[i]
+	-- BG
+	Frames[ic][tid].bars[i].bg:SetTexture(BG[ic][tid].bars[i].full)
 
+	-- Border
+	Frames[ic][tid].bars[i].border:SetBackdrop({bgFile = "", edgeFile = Borders[ic][tid].bars[i].full, edgeSize = dbc.border.full.edgesize, tile = false, tileSize = 0, insets = {left = 0, right = 0, top = 0, bottom = 0}})
+	Frames[ic][tid].bars[i].border:SetHeight(dbc.size.height - dbc.border.full.inset)
+	Frames[ic][tid].bars[i].border:SetWidth(dbc.size.width - dbc.border.full.inset)
+
+	-- Colors
+	if points < Types[ic].points[it].barcount then
 		if db.classcolor.enabled then
-			Frames[ic][tid].bars[i].bg:SetVertexColor(ClassColorBarTable[ic].bg.empty.r, ClassColorBarTable[ic].bg.empty.g, ClassColorBarTable[ic].bg.empty.b, db[ic].types[tid].bars[i].bg.empty.color.a)
-			Frames[ic][tid].bars[i].border:SetBackdropBorderColor(ClassColorBarTable[ic].border.empty.r, ClassColorBarTable[ic].border.empty.g, ClassColorBarTable[ic].border.empty.b, db[ic].types[tid].bars[i].border.empty.color.a)
+			Frames[ic][tid].bars[i].bg:SetVertexColor(cc.bg.normal.r, cc.bg.normal.g, cc.bg.normal.b, dbc.bg.full.color.a)
+			Frames[ic][tid].bars[i].border:SetBackdropBorderColor(cc.border.normal.r, cc.border.normal.g, cc.border.normal.b, dbc.border.full.color.a)
 		else
-			Frames[ic][tid].bars[i].bg:SetVertexColor(db[ic].types[tid].bars[i].bg.empty.color.r, db[ic].types[tid].bars[i].bg.empty.color.g, db[ic].types[tid].bars[i].bg.empty.color.b, db[ic].types[tid].bars[i].bg.empty.color.a)
-			Frames[ic][tid].bars[i].border:SetBackdropBorderColor(db[ic].types[tid].bars[i].border.empty.color.r, db[ic].types[tid].bars[i].border.empty.color.g, db[ic].types[tid].bars[i].border.empty.color.b, db[ic].types[tid].bars[i].border.empty.color.a)
+			Frames[ic][tid].bars[i].bg:SetVertexColor(dbc.bg.full.color.r, dbc.bg.full.color.g, dbc.bg.full.color.b, dbc.bg.full.color.a)
+			Frames[ic][tid].bars[i].border:SetBackdropBorderColor(dbc.border.full.color.r, dbc.border.full.color.g, dbc.border.full.color.b, dbc.border.full.color.a)
 		end
+	else
+		if db.classcolor.enabled then
+			Frames[ic][tid].bars[i].bg:SetVertexColor(cc.bg.max.r, cc.bg.max.g, cc.bg.max.b, dbc.bg.full.maxcolor.a)
+			Frames[ic][tid].bars[i].border:SetBackdropBorderColor(cc.border.max.r, cc.border.max.g, cc.border.max.b, dbc.bg.full.maxcolor.a)
+		else
+			Frames[ic][tid].bars[i].bg:SetVertexColor(dbc.bg.full.maxcolor.r, dbc.bg.full.maxcolor.g, dbc.bg.full.maxcolor.b, dbc.bg.full.maxcolor.a)
+			Frames[ic][tid].bars[i].border:SetBackdropBorderColor(dbc.border.full.maxcolor.r, dbc.border.full.maxcolor.g, dbc.border.full.maxcolor.b, dbc.border.full.maxcolor.a)
+		end
+	end
+
+	-- Spark
+	if dbc.spark.enabled then
+		Frames[ic][tid].bars[i].spark.frame:Show()
+		Frames[ic][tid].bars[i].spark.bg:SetTexture(BG[ic][tid].bars[i].spark)
+		if points < Types[ic].points[it].barcount then
+			-- Normal color
+			if db.classcolor.enabled then
+				Frames[ic][tid].bars[i].spark.bg:SetVertexColor(cc.spark.normal.r, cc.spark.normal.g, cc.spark.normal.b, dbc.spark.bg.color.a)
+			else
+				Frames[ic][tid].bars[i].spark.bg:SetVertexColor(dbc.spark.bg.color.r, dbc.spark.bg.color.g, dbc.spark.bg.color.b, dbc.spark.bg.color.a)
+			end
+		else
+			-- Max color
+			if db.classcolor.enabled then
+				Frames[ic][tid].bars[i].spark.bg:SetVertexColor(cc.spark.max.r, cc.spark.max.g, cc.spark.max.b, dbc.spark.bg.maxcolor.a)
+			else
+				Frames[ic][tid].bars[i].spark.bg:SetVertexColor(dbc.spark.bg.maxcolor.r, dbc.spark.bg.maxcolor.g, dbc.spark.bg.maxcolor.b, dbc.spark.bg.maxcolor.a)
+			end
+		end
+	else
+		Frames[ic][tid].bars[i].spark.frame:Hide()
+	end
+end
+
+-- Update Point Bars
+local function HideAtIndex(ic, it, tid, i)
+	if db[ic].types[tid].general.hideempty then
+	-- Hide "empty" bar
+		Frames[ic][tid].bars[i].frame:Hide()
+	else
+	-- Show bar and set textures to "Empty"
+		Frames[ic][tid].bars[i].frame:Show()
+		SetEmptyBarTextures(ic, it, tid, i)
+	end
+	-- Hide the "Spark"
+	Frames[ic][tid].bars[i].spark.frame:Hide()
+	if #Frames[ic][tid].bars[i].subbars > 0 then
+		for j = 0, 8 do Frames[ic][tid].bars[i].subbars[j].frame:Hide() end
 	end
 end
 
@@ -461,25 +504,25 @@ function cPointDisplay:UpdatePointDisplay(...)
 				-- Update the Display
 					-- Update Bars if their Points have changed
 					if PointsChanged[tid] then
+						if Points[tid] == nil then Points[tid] = 0 end
+						local points = Points[tid];
+						if tid == "ssf" then points = points / 10 end
 						for i = 1, Types[ic].points[it].barcount do
-							if Points[tid] == nil then Points[tid] = 0 end
-							if Points[tid] >= i then
+							if points > i - 1 and points < i and tid == "ssf" then
+							--- Show bar and set texture to "Partial"
+								HideAtIndex(ic, it, tid, i)
+								Frames[ic][tid].bars[i].frame:Show()
+								SetPartialBarTextures(ic, it, tid, i, Points[tid] - (10 * (i - 1)))
+							elseif points >= i then
 							-- Show bar and set textures to "Full"
 								Frames[ic][tid].bars[i].frame:Show()
-								SetPointBarTextures(true, ic, it, tid, i)
-							else
-								if db[ic].types[tid].general.hideempty then
-								-- Hide "empty" bar
-									Frames[ic][tid].bars[i].frame:Hide()
-								else
-								-- Show bar and set textures to "Empty"
-									Frames[ic][tid].bars[i].frame:Show()
-									SetPointBarTextures(false, ic, it, tid, i)
+								SetPointBarTextures(ic, it, tid, i, points)
+								if #Frames[ic][tid].bars[i].subbars > 0 then
+									for j = 0, 8 do Frames[ic][tid].bars[i].subbars[j].frame:Hide() end
 								end
-								-- Hide the "Spark"
-								Frames[ic][tid].bars[i].spark.frame:Hide()
+							else
+								HideAtIndex(ic, it, tid, i)
 							end
-
 						end
 						-- Show the Display
 						Frames[ic][tid].bgpanel.frame:Show()
@@ -543,9 +586,7 @@ function cPointDisplay:GetPoints(CurClass, CurType)
 	-- Warlock
 	elseif CurClass == "WARLOCK" then
 		-- Soul Shards
-		if CurType == "ss" then
-			NewPoints = UnitPower("player", Enum.PowerType.SoulShards)
-		end
+		NewPoints = UnitPower("player", Enum.PowerType.SoulShards, CurType == "ssf")
 	-- Mage
 	elseif CurClass == "MAGE" then
 		-- Arcane Charges
@@ -597,7 +638,7 @@ function cPointDisplay:UpdatePoints(...)
 		if Types[ic] then
 			for it,vt in ipairs(Types[ic].points) do
 				local tid = Types[ic].points[it].id
-				if ( db[ic].types[tid].enabled and not db[ic].types[tid].configmode.enabled ) then
+				if (db[ic].types[tid].enabled and not db[ic].types[tid].configmode.enabled) then
 					-- Retrieve new point count
 					local OldPoints = Points[tid]
 					cPointDisplay:GetPoints(ic, tid)
@@ -733,15 +774,44 @@ function cPointDisplay:UpdatePosition()
 				Frames[ic][tid].bars[i].frame:SetHeight(db[ic].types[tid].bars[i].size.height)
 
 				Frames[ic][tid].bars[i].border:SetFrameStrata(db[ic].types[tid].position.framelevel.strata)
-				Frames[ic][tid].bars[i].border:SetFrameLevel(db[ic].types[tid].position.framelevel.level + 3)
+				Frames[ic][tid].bars[i].border:SetFrameLevel(db[ic].types[tid].position.framelevel.level + 4)
 
 				Frames[ic][tid].bars[i].spark.frame:SetParent(Frames[ic][tid].bars[i].frame)
 				Frames[ic][tid].bars[i].spark.frame:ClearAllPoints()
 				Frames[ic][tid].bars[i].spark.frame:SetPoint("CENTER", Frames[ic][tid].bars[i].frame, "CENTER", db[ic].types[tid].bars[i].spark.position.x, db[ic].types[tid].bars[i].spark.position.y)
 				Frames[ic][tid].bars[i].spark.frame:SetFrameStrata(db[ic].types[tid].position.framelevel.strata)
-				Frames[ic][tid].bars[i].spark.frame:SetFrameLevel(db[ic].types[tid].position.framelevel.level + 4)
+				Frames[ic][tid].bars[i].spark.frame:SetFrameLevel(db[ic].types[tid].position.framelevel.level + 5)
 				Frames[ic][tid].bars[i].spark.frame:SetWidth(db[ic].types[tid].bars[i].spark.size.width)
 				Frames[ic][tid].bars[i].spark.frame:SetHeight(db[ic].types[tid].bars[i].spark.size.height)
+
+				if #Frames[ic][tid].bars[i].subbars > 0 then
+					for j = 0, 8 do
+						local XSOfs = 0
+						local YSOfs = 0
+						local fillStart = { "LEFT", "RIGHT", "TOP", "BOTTOM" }
+						if IsVert then
+							YSOfs = j * (db[ic].types[tid].bars[i].size.height / 9) * RevMult
+							if IsRev then fillStart = "TOP" else fillStart = "BOTTOM" end
+						else 
+							XSOfs = j * (db[ic].types[tid].bars[i].size.width / 9) * RevMult
+							if IsRev then fillStart = "RIGHT" else fillStart = "LEFT" end
+						end
+						Frames[ic][tid].bars[i].subbars[j].frame:SetParent(Frames[ic][tid].bars[i].frame)
+						Frames[ic][tid].bars[i].subbars[j].frame:ClearAllPoints()
+
+						Frames[ic][tid].bars[i].subbars[j].frame:SetPoint(fillStart, Frames[ic][tid].bars[i].frame, fillStart, XSOfs, YSOfs)
+
+						Frames[ic][tid].bars[i].subbars[j].frame:SetFrameStrata(Frames[ic][tid].bars[i].frame:GetFrameStrata())
+						Frames[ic][tid].bars[i].subbars[j].frame:SetFrameLevel(Frames[ic][tid].bars[i].frame:GetFrameLevel() + 1)
+						if IsVert then
+							Frames[ic][tid].bars[i].subbars[j].frame:SetWidth(db[ic].types[tid].bars[i].size.width)
+							Frames[ic][tid].bars[i].subbars[j].frame:SetHeight(db[ic].types[tid].bars[i].size.height / 9)
+						else 
+							Frames[ic][tid].bars[i].subbars[j].frame:SetWidth(db[ic].types[tid].bars[i].size.width / 9)
+							Frames[ic][tid].bars[i].subbars[j].frame:SetHeight(db[ic].types[tid].bars[i].size.height)
+						end
+					end
+				end
 			end
 		end
 	end
@@ -884,6 +954,7 @@ local function CreateFrames()
 			-- Point bars
 			for i = 1, Types[ic].points[it].barcount do
 				local BarFrameName = "cPointDisplay_Frames_"..tid.."_bar"..tostring(i)
+			
 				Frames[ic][tid].bars[i].frame = CreateFrame("Frame", BarFrameName, UIParent)
 
 				Frames[ic][tid].bars[i].bg = Frames[ic][tid].bars[i].frame:CreateTexture(nil, "ARTWORK")
@@ -895,6 +966,19 @@ local function CreateFrames()
 				Frames[ic][tid].bars[i].border:SetPoint("CENTER", Frames[ic][tid].bars[i].frame, "CENTER", 0, 0)
 
 				Frames[ic][tid].bars[i].frame:Show()
+				if tid == "ssf" then
+					for j = 0, 8 do
+						local SubBarSubFrameName = "cPointDisplay_Frames_"..tid.."_bar"..tostring(i).."_sub"..tostring(j)
+						Frames[ic][tid].bars[i].subbars[j] = {frame = nil, bg = nil}
+						
+						Frames[ic][tid].bars[i].subbars[j].frame = CreateFrame("Frame", SubBarSubFrameName, UIParent)
+
+						Frames[ic][tid].bars[i].subbars[j].bg = Frames[ic][tid].bars[i].subbars[j].frame:CreateTexture(nil, "ARTWORK")
+						Frames[ic][tid].bars[i].subbars[j].bg:SetAllPoints(Frames[ic][tid].bars[i].subbars[j].frame)
+
+						Frames[ic][tid].bars[i].subbars[j].frame:Show()
+					end
+				end
 
 				-- Spark
 				Frames[ic][tid].bars[i].spark.frame = CreateFrame("Frame", nil, UIParent)
@@ -945,7 +1029,7 @@ local function CreateTables()
 				bars = {},
 			}
 			for i = 1, Types[ic].points[it].barcount do
-				Frames[ic][tid].bars[i] = {frame = nil, bg = nil, border = nil, spark = {frame = nil, bg = nil}}
+				Frames[ic][tid].bars[i] = {frame = nil, bg = nil, border = nil, spark = {frame = nil, bg = nil}, subbars = {}}
 				Borders[ic][tid].bars[i] = {empty = "", full = ""}
 				BG[ic][tid].bars[i] = {empty = "", full = "", spark = ""}
 			end
