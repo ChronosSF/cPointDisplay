@@ -1,11 +1,14 @@
 # cPointDisplay
 
-## Installation
+## What is it?
 
-To install just get the package from GitHub and extract it to your `<wow-installation-directory>\Interface\AddOns\` folder. You may need to rename the extracted folder to `cPointDisplay`.
+A fan update of the abandoned [nibPointDisplay](http://www.wowinterface.com/downloads/info17750-nibPointDisplay.html) by Nibelheim.
 
-If you have been using `nibPointDisplay` and want to keep your settings you should rename the file `<wow-installation-directory>\WTF\Account\<acc name>\SavedVariables\nibPointDisplay.lua` to `<wow-installation-directory>\WTF\Account\<acc name>\SavedVariables\cPointDisplay.lua`.
-Then open the renamed file and change the string `nibPointDisplayDB` to `cPointDisplayDB`.
+The addon provides a highly customizable graphical display of class points and aura stacks.
+
+## Textures
+
+cPointDisplay supports SharedMedia for textures. The default package contains Triangle, Circle, Plain, Soul Shard and Holy Power textures.
 
 ## Supported Power Types
 
@@ -17,6 +20,29 @@ Then open the renamed file and change the string `nibPointDisplayDB` to `cPointD
 - Icicles
 
 ***Note***: For Soul Shards both full and fractional values are supported. Enable only one of them. The `Soul Shards Precise` units will work properly for Demonology and Affliction.
+
+## Options
+
+- General Settings
+    - Hide Default UI point display
+    - Show at 0 points/stacks
+    - Hide unused points/stacks
+    - Direction
+        - Switch between Horizontal and Vertical
+        - Reverse orientation
+- Position
+    - X and Y offsets
+    - Anchor To and From
+    - Parent it to any panel
+    - Set Frame Strata and Level
+- Point Bars - Each individual point can be customized
+- Combat Fader
+    - Change the Point Display opacity based on player status
+        - In Combat
+        - Hurt
+        - Target selected
+        - Out of combat
+- Profiles (Ace)
 
 ### Requests
 
