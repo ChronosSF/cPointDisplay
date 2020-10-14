@@ -570,7 +570,7 @@ function cPointDisplay:GetPoints(CurClass, CurType)
 			end
 		end
 	-- Paladin
-	elseif CurClass == "PALADIN" and PlayerSpec == 3 then -- hp is only for retribution
+	elseif CurClass == "PALADIN" then
 		-- Holy Power
 		if CurType == "hp" then
 			NewPoints = UnitPower("player", Enum.PowerType.HolyPower)
@@ -935,12 +935,12 @@ local function CreateFrames()
 
 			-- BG Panel
 			local FrameName = "cPointDisplay_Frames_"..tid
-			Frames[ic][tid].bgpanel.frame = CreateFrame("Frame", FrameName, UIParent)
+			Frames[ic][tid].bgpanel.frame = CreateFrame("Frame", FrameName, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 
 			Frames[ic][tid].bgpanel.bg = Frames[ic][tid].bgpanel.frame:CreateTexture(nil, "ARTWORK")
 			Frames[ic][tid].bgpanel.bg:SetAllPoints(Frames[ic][tid].bgpanel.frame)
 
-			Frames[ic][tid].bgpanel.border = CreateFrame("Frame", nil, UIParent)
+			Frames[ic][tid].bgpanel.border = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 			Frames[ic][tid].bgpanel.border:SetParent(Frames[ic][tid].bgpanel.frame)
 			Frames[ic][tid].bgpanel.border:ClearAllPoints()
 			Frames[ic][tid].bgpanel.border:SetPoint("CENTER", Frames[ic][tid].bgpanel.frame, "CENTER", 0, 0)
@@ -949,18 +949,18 @@ local function CreateFrames()
 
 			-- Anchor Panel
 			local AnchorFrameName = "cPointDisplay_Frames_"..tid.."_avAanchor"
-			Frames[ic][tid].anchor.frame = CreateFrame("Frame", AnchorFrameName, UIParent)
+			Frames[ic][tid].anchor.frame = CreateFrame("Frame", AnchorFrameName, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 
 			-- Point bars
 			for i = 1, Types[ic].points[it].barcount do
 				local BarFrameName = "cPointDisplay_Frames_"..tid.."_bar"..tostring(i)
 			
-				Frames[ic][tid].bars[i].frame = CreateFrame("Frame", BarFrameName, UIParent)
+				Frames[ic][tid].bars[i].frame = CreateFrame("Frame", BarFrameName, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 
 				Frames[ic][tid].bars[i].bg = Frames[ic][tid].bars[i].frame:CreateTexture(nil, "ARTWORK")
 				Frames[ic][tid].bars[i].bg:SetAllPoints(Frames[ic][tid].bars[i].frame)
 
-				Frames[ic][tid].bars[i].border = CreateFrame("Frame", nil, UIParent)
+				Frames[ic][tid].bars[i].border = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 				Frames[ic][tid].bars[i].border:SetParent(Frames[ic][tid].bars[i].frame)
 				Frames[ic][tid].bars[i].border:ClearAllPoints()
 				Frames[ic][tid].bars[i].border:SetPoint("CENTER", Frames[ic][tid].bars[i].frame, "CENTER", 0, 0)
@@ -971,7 +971,7 @@ local function CreateFrames()
 						local SubBarSubFrameName = "cPointDisplay_Frames_"..tid.."_bar"..tostring(i).."_sub"..tostring(j)
 						Frames[ic][tid].bars[i].subbars[j] = {frame = nil, bg = nil}
 						
-						Frames[ic][tid].bars[i].subbars[j].frame = CreateFrame("Frame", SubBarSubFrameName, UIParent)
+						Frames[ic][tid].bars[i].subbars[j].frame = CreateFrame("Frame", SubBarSubFrameName, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 
 						Frames[ic][tid].bars[i].subbars[j].bg = Frames[ic][tid].bars[i].subbars[j].frame:CreateTexture(nil, "ARTWORK")
 						Frames[ic][tid].bars[i].subbars[j].bg:SetAllPoints(Frames[ic][tid].bars[i].subbars[j].frame)
@@ -981,7 +981,7 @@ local function CreateFrames()
 				end
 
 				-- Spark
-				Frames[ic][tid].bars[i].spark.frame = CreateFrame("Frame", nil, UIParent)
+				Frames[ic][tid].bars[i].spark.frame = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 
 				Frames[ic][tid].bars[i].spark.bg = Frames[ic][tid].bars[i].spark.frame:CreateTexture(nil, "ARTWORK")
 				Frames[ic][tid].bars[i].spark.bg:SetAllPoints(Frames[ic][tid].bars[i].spark.frame)
