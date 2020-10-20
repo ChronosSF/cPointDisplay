@@ -36,6 +36,12 @@ cPointDisplay.Types = {
 			[1] = {name = "Chi", id = "c5",  barcount = 5},
 			[2] = {name = "Chi with Ascension", id = "c6",  barcount = 6}
 		}
+	},
+	["WARRIOR"] = {
+		name = "Warrior",
+		points = {
+			[1] = {name = "Whirlwind", id = "w2",  barcount = 2},
+		}
 	}
 }
 local Types = cPointDisplay.Types
@@ -541,7 +547,7 @@ local function GetBuffCount(Spell, ...)
 	local unit = ... or "player"
 	for i = 1, 255 do
 		local name, _, count, _, _, _, _, _, _, id = UnitAura(unit, i, "HELPFUL")
-		if not name then return end
+		if not name then return 0 end
 		if Spell == id or Spell == name then
 			if (count == nil) then count = 0 end
 			return count
@@ -596,7 +602,14 @@ function cPointDisplay:GetPoints(CurClass, CurType)
 		elseif CurType == "ic" and PlayerSpec == 3 then
 			NewPoints = GetBuffCount(205473) -- Icicle buff id
 		end
+	-- Warrior
+	elseif CurClass == "WARRIOR" then
+		-- Whirlwind
+		if CurType == "w2" and PlayerSpec == 2 then
+			NewPoints = GetBuffCount(85739) -- Whirlwind buff id
+		end
 	end
+	
 	Points[CurType] = NewPoints
 end
 
