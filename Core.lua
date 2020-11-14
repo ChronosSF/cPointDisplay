@@ -6,35 +6,47 @@ cPointDisplay.Types = {
 	["GENERAL"] = {
 		name = "General",
 		points = {
-			[1] = {name = "Combo Points", id = "cp", barcount = 5},
-			[2] = {name = "Combo Points with Deeper Stratagem", id = "cp6", barcount = 6},
+			[1] = { name = "Combo Points", id = "cp", barcount = 5, fullcount = 5 },
+			[2] = { name = "Combo Points with Deeper Stratagem", id = "cp6", barcount = 6, fullcount = 6 },
 		}
 	},
 	["PALADIN"] = {
 		name = "Paladin",
 		points = {
-			[1] = {name = "Holy Power", id = "hp", barcount = 5},
+			[1] = { name = "Holy Power", id = "hp", barcount = 5, fullcount = 5 },
 		}
 	},
 	["WARLOCK"] = {
 		name = "Warlock",
 		points = {
-			[1] = {name = "Soul Shards", id = "ss", barcount = 5},
-			[2] = {name = "Soul Shards Precise", id = "ssf", barcount = 5},
+			[1] = { name = "Soul Shards", id = "ss", barcount = 5, fullcount = 5 },
+			[2] = { name = "Soul Shards Precise", id = "ssf", barcount = 5, fullcount = 5 },
 		}
 	},
 	["MAGE"] = {
 		name = "Mage",
 		points = {
-			[1] = {name = "Arcane Charges", id = "ac", barcount = 4},
-			[2] = {name = "Icicles", id = "ic", barcount = 5}
+			[1] = { name = "Arcane Charges", id = "ac", barcount = 4, fullcount = 4},
+			[2] = { name = "Icicles", id = "ic", barcount = 5, fullcount = 5}
 		}
 	},
 	["MONK"] = {
 		name = "Monk",
 		points = {
-			[1] = {name = "Chi", id = "c5",  barcount = 5},
-			[2] = {name = "Chi with Ascension", id = "c6",  barcount = 6}
+			[1] = { name = "Chi", id = "c5",  barcount = 5, fullcount = 5 },
+			[2] = { name = "Chi with Ascension", id = "c6",  barcount = 6, fullcount = 6 }
+		}
+	},
+	["SHAMAN"] = {
+		name = "Shaman",
+		points = {
+			[1]	= { name = "Maelstrom Weapon", id = "mw", barcount = 10, fullcount = 5 }
+		}
+	},
+	["DEMONHUNTER"] = {
+		name = "Demon Hunter",
+		points = {
+			[1]	= { name = "Soul Fragments", id = "sf", barcount = 5, fullcount = 5 }
 		}
 	}
 }
@@ -415,7 +427,7 @@ local function SetPointBarTextures(ic, it, tid, i, points)
 	Frames[ic][tid].bars[i].border:SetWidth(dbc.size.width - dbc.border.full.inset)
 
 	-- Colors
-	if points < Types[ic].points[it].barcount then
+	if points < Types[ic].points[it].fullcount then
 		if db.classcolor.enabled then
 			Frames[ic][tid].bars[i].bg:SetVertexColor(cc.bg.normal.r, cc.bg.normal.g, cc.bg.normal.b, dbc.bg.full.color.a)
 			Frames[ic][tid].bars[i].border:SetBackdropBorderColor(cc.border.normal.r, cc.border.normal.g, cc.border.normal.b, dbc.border.full.color.a)
@@ -595,6 +607,16 @@ function cPointDisplay:GetPoints(CurClass, CurType)
 		-- Icicles
 		elseif CurType == "ic" and PlayerSpec == 3 then
 			NewPoints = GetBuffCount(205473) -- Icicle buff id
+		end
+	-- Shaman
+	elseif CurClass == "SHAMAN" then
+		if CurType == "mw" and PlayerSpec == 2 then
+			NewPoints = GetBuffCount(344179) -- Maelstrom Weapon buff id
+		end
+	-- Demon Hunter
+	elseif CurClass == "DEMONHUNTER" then
+		if CurType == "sf" and PlayerSpec == 2 then
+			NewPoints = GetBuffCount(203981) -- Soul Fragments buff id
 		end
 	end
 	Points[CurType] = NewPoints

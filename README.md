@@ -18,8 +18,11 @@ cPointDisplay supports SharedMedia for textures. The default package contains Tr
 - Arcane Charges
 - Chi
 - Icicles
+- Soul Fragments
+- Maelstrom Weapon**
 
 ***Note***: For Soul Shards both full and fractional values are supported. Enable only one of them. The `Soul Shards Precise` units will work properly for Demonology and Affliction.
+***Note***: Maelstrom Weapon lights up as though it is full on 5 stacks.
 
 ## Options
 
